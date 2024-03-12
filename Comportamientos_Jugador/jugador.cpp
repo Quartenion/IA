@@ -5,7 +5,73 @@ using namespace std;
 Action ComportamientoJugador::think(Sensores sensores)
 {
 
-	Action accion = actRUN;
+	Action accion = actIDLE;
+	int a;
+
+	//////////////////////////////////TUTORIAL\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////////////////
+	switch(last_action){
+		case actWALK: 
+			switch(current_state.brujula){
+				case norte: current_state.fil--; break;
+				case noreste: current_state.fil--; current_state.col++; break;
+				case este: current_state.col++; break;
+				case sureste: current_state.fil++; current_state.col++; break;
+				case sur: current_state.fil++; break;
+				case suroeste: current_state.fil++; current_state.col--; break;
+				case oeste: current_state.col--; break;
+				case noroeste: current_state.fil--; current_state.col--; break;
+			}
+			break;
+
+		case actRUN: 
+			//Actualizacion en caso de correr
+			break;
+
+		case actTURN_SR:
+			a = current_state.brujula;
+			a = (a+2)%8;
+			current_state.brujula = static_cast<Orientacion>(a);
+			break;
+
+		case actTURN_L: 
+			a = current_state.brujula;
+			a = (a+6)%8;
+			current_state.brujula = static_cast<Orientacion>(a);
+			break;
+	}
+
+	if(sensores.terreno[0] == 'G' and !bien_situado){
+		current_state.fil = sensores.posF;
+		current_state.col = sensores.posC;
+		current_state.brujula = sensores.sentido;
+		bien_situado = true;
+	}
+
+	/*if(bien_situado){
+		mapaResultado[current_state.fil][current_state.col] = sensores.terreno[0];
+	}
+	*/
+	
+
+	//Decir la nueva accion
+	if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G') and sensores.agentes[2] == '_' ){
+		accion = actWALK;
+	}
+	else if( !girar_derecha ){
+		accion = actTURN_L;
+		girar_derecha = (rand()%2 == 0);
+	}
+	else{
+		accion = actTURN_SR;
+		girar_derecha = (rand()%2 == 0);
+	}
+
+	//Recordar la ultima accion
+	last_action = accion;
+
+	//////////////////////////////////TUTORIAL\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////////////////
 
 	// Mostrar el valor de los sensores
 	cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC;
