@@ -25,33 +25,43 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 
 		case actRUN: 
-			//Actualizacion en caso de correr
+			switch(current_state.brujula){
+				case norte: current_state.fil-=2; break;
+				case noreste: current_state.fil-=2; current_state.col+=2; break;
+				case este: current_state.col+=2; break;
+				case sureste: current_state.fil+=2; current_state.col+=2; break;
+				case sur: current_state.fil+=2; break;
+				case suroeste: current_state.fil+=2; current_state.col-=2; break;
+				case oeste: current_state.col-=2; break;
+				case noroeste: current_state.fil-=2; current_state.col-=2; break;
+			}
 			break;
 
 		case actTURN_SR:
 			a = current_state.brujula;
-			a = (a+2)%8;
+			a = (a+1)%8;
 			current_state.brujula = static_cast<Orientacion>(a);
 			break;
 
 		case actTURN_L: 
+			// Actualizacion en caso de girar 90 a la izquierda
 			a = current_state.brujula;
 			a = (a+6)%8;
 			current_state.brujula = static_cast<Orientacion>(a);
 			break;
 	}
 
-	if(sensores.terreno[0] == 'G' and !bien_situado){
+	if(sensores.posF!= -1 and !bien_situado){
 		current_state.fil = sensores.posF;
 		current_state.col = sensores.posC;
 		current_state.brujula = sensores.sentido;
 		bien_situado = true;
 	}
 
-	/*if(bien_situado){
+	if(bien_situado){
 		mapaResultado[current_state.fil][current_state.col] = sensores.terreno[0];
 	}
-	*/
+	
 	
 
 	//Decir la nueva accion
