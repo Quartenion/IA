@@ -33,5 +33,7 @@ class ComportamientoJugador : public Comportamiento{
   Action last_action;
   bool girar_derecha = false;
   bool bien_situado = false;
+  bool tengo_bikini = false;
+  bool tengo_zapatillas = false;
 };
 #endif
