@@ -61,25 +61,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 	if(bien_situado){
 		switch(current_state.brujula){
 			case norte: 
-				mapaResultado[current_state.fil][current_state.col] = sensores.terreno[0];
-
-				mapaResultado[current_state.fil-1][current_state.col-1] = sensores.terreno[1];
-				mapaResultado[current_state.fil-1][current_state.col] = sensores.terreno[2];
-				mapaResultado[current_state.fil-1][current_state.col+1] = sensores.terreno[3];
-
-				mapaResultado[current_state.fil-2][current_state.col-2] = sensores.terreno[4];
-				mapaResultado[current_state.fil-2][current_state.col-1] = sensores.terreno[5];
-				mapaResultado[current_state.fil-2][current_state.col] = sensores.terreno[6];
-				mapaResultado[current_state.fil-2][current_state.col+1] = sensores.terreno[7];
-				mapaResultado[current_state.fil-2][current_state.col+2] = sensores.terreno[8];
-
-				mapaResultado[current_state.fil-3][current_state.col-3] = sensores.terreno[9];
-				mapaResultado[current_state.fil-3][current_state.col-2] = sensores.terreno[10];
-				mapaResultado[current_state.fil-3][current_state.col-1] = sensores.terreno[11];
-				mapaResultado[current_state.fil-3][current_state.col] = sensores.terreno[12];
-				mapaResultado[current_state.fil-3][current_state.col+1] = sensores.terreno[13];
-				mapaResultado[current_state.fil-3][current_state.col+2] = sensores.terreno[14];
-				mapaResultado[current_state.fil-3][current_state.col+3] = sensores.terreno[15];
+				for(int i = 0; i < 4 ;i++){
+					for(int j = 0; j < 2*i + 1; j++){
+						mapaResultado[current_state.fil-i][current_state.col-i+j] = sensores.terreno[i*i+j];
+					}
+				}
 			break;
 
 			case noreste: 
@@ -105,25 +91,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 
 			case este: 
-				mapaResultado[current_state.fil][current_state.col] = sensores.terreno[0];
-
-				mapaResultado[current_state.fil-1][current_state.col+1] = sensores.terreno[1];
-				mapaResultado[current_state.fil][current_state.col+1] = sensores.terreno[2];
-				mapaResultado[current_state.fil+1][current_state.col+1] = sensores.terreno[3];
-
-				mapaResultado[current_state.fil-2][current_state.col+2] = sensores.terreno[4];
-				mapaResultado[current_state.fil-1][current_state.col+2] = sensores.terreno[5];
-				mapaResultado[current_state.fil][current_state.col+2] = sensores.terreno[6];
-				mapaResultado[current_state.fil+1][current_state.col+2] = sensores.terreno[7];
-				mapaResultado[current_state.fil+2][current_state.col+2] = sensores.terreno[8];
-
-				mapaResultado[current_state.fil-3][current_state.col+3] = sensores.terreno[9];
-				mapaResultado[current_state.fil-2][current_state.col+3] = sensores.terreno[10];
-				mapaResultado[current_state.fil-1][current_state.col+3] = sensores.terreno[11];
-				mapaResultado[current_state.fil][current_state.col+3] = sensores.terreno[12];
-				mapaResultado[current_state.fil+1][current_state.col+3] = sensores.terreno[13];
-				mapaResultado[current_state.fil+2][current_state.col+3] = sensores.terreno[14];
-				mapaResultado[current_state.fil+3][current_state.col+3] = sensores.terreno[15];
+				for(int i = 0; i < 4 ;i++){
+					for(int j = 0; j < 2*i + 1; j++){
+						mapaResultado[current_state.fil-i+j][current_state.col+i] = sensores.terreno[i*i+j];
+					}
+				}
 			break;
 
 			case sureste: 
@@ -149,25 +121,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 
 			case sur: 
-				mapaResultado[current_state.fil][current_state.col] = sensores.terreno[0];
-
-				mapaResultado[current_state.fil+1][current_state.col-1] = sensores.terreno[3];
-				mapaResultado[current_state.fil+1][current_state.col] = sensores.terreno[2];
-				mapaResultado[current_state.fil+1][current_state.col+1] = sensores.terreno[1];
-
-				mapaResultado[current_state.fil+2][current_state.col-2] = sensores.terreno[8];
-				mapaResultado[current_state.fil+2][current_state.col-1] = sensores.terreno[7];
-				mapaResultado[current_state.fil+2][current_state.col] = sensores.terreno[6];
-				mapaResultado[current_state.fil+2][current_state.col+1] = sensores.terreno[5];
-				mapaResultado[current_state.fil+2][current_state.col+2] = sensores.terreno[4];
-
-				mapaResultado[current_state.fil+3][current_state.col-3] = sensores.terreno[15];
-				mapaResultado[current_state.fil+3][current_state.col-2] = sensores.terreno[14];
-				mapaResultado[current_state.fil+3][current_state.col-1] = sensores.terreno[13];
-				mapaResultado[current_state.fil+3][current_state.col] = sensores.terreno[12];
-				mapaResultado[current_state.fil+3][current_state.col+1] = sensores.terreno[11];
-				mapaResultado[current_state.fil+3][current_state.col+2] = sensores.terreno[10];
-				mapaResultado[current_state.fil+3][current_state.col+3] = sensores.terreno[9];
+				for(int i = 0; i < 4 ;i++){
+					for(int j = 2*i; j >= 0; j--){
+						mapaResultado[current_state.fil+i][current_state.col+i-j] = sensores.terreno[i*i+j];
+					}
+				}
 			break;
 
 			case suroeste: 
@@ -193,25 +151,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 
 			case oeste: 
-				mapaResultado[current_state.fil][current_state.col] = sensores.terreno[0];
-
-				mapaResultado[current_state.fil-1][current_state.col-1] = sensores.terreno[3];
-				mapaResultado[current_state.fil][current_state.col-1] = sensores.terreno[2];
-				mapaResultado[current_state.fil+1][current_state.col-1] = sensores.terreno[1];
-
-				mapaResultado[current_state.fil-2][current_state.col-2] = sensores.terreno[8];
-				mapaResultado[current_state.fil-1][current_state.col-2] = sensores.terreno[7];
-				mapaResultado[current_state.fil][current_state.col-2] = sensores.terreno[6];
-				mapaResultado[current_state.fil+1][current_state.col-2] = sensores.terreno[5];
-				mapaResultado[current_state.fil+2][current_state.col-2] = sensores.terreno[4];
-
-				mapaResultado[current_state.fil-3][current_state.col-3] = sensores.terreno[15];
-				mapaResultado[current_state.fil-2][current_state.col-3] = sensores.terreno[14];
-				mapaResultado[current_state.fil-1][current_state.col-3] = sensores.terreno[13];
-				mapaResultado[current_state.fil][current_state.col-3] = sensores.terreno[12];
-				mapaResultado[current_state.fil+1][current_state.col-3] = sensores.terreno[11];
-				mapaResultado[current_state.fil+2][current_state.col-3] = sensores.terreno[10];
-				mapaResultado[current_state.fil+3][current_state.col-3] = sensores.terreno[9];
+				for(int i = 0; i < 4 ;i++){
+					for(int j = 2*i; j >= 0; j--){
+						mapaResultado[current_state.fil+i-j][current_state.col-i] = sensores.terreno[i*i+j];
+					}
+				}
 			break;
 
 			case noroeste: 
