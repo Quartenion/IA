@@ -249,7 +249,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 	}
 
 	//Decir la nueva accion
-	if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G') and sensores.agentes[2] == '_' ){
+	if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'K' or sensores.terreno[2] == 'D') and sensores.agentes[2] == '_' ){
 		accion = actWALK;
 	}
 	else if(tengo_bikini and sensores.terreno[2] == 'A'){
