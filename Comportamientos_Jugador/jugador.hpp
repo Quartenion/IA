@@ -18,6 +18,10 @@ class ComportamientoJugador : public Comportamiento{
       current_state.col = 99;
       current_state.brujula = norte;
       last_action = actIDLE;
+      girar_derecha = false;
+      bien_situado = false;
+      tengo_bikini = false;
+      tengo_zapatillas = false;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -31,9 +35,9 @@ class ComportamientoJugador : public Comportamiento{
   state current_state; 
   Orientacion brujula;
   Action last_action;
-  bool girar_derecha = false;
-  bool bien_situado = false;
-  bool tengo_bikini = false;
-  bool tengo_zapatillas = false;
+  bool girar_derecha;
+  bool bien_situado;
+  bool tengo_bikini;
+  bool tengo_zapatillas;
 };
 #endif
