@@ -18,10 +18,25 @@ class ComportamientoJugador : public Comportamiento{
       current_state.col = 99;
       current_state.brujula = norte;
       last_action = actIDLE;
-      girar_derecha = false;
+      girar_derecha = 0;
+      n_casillas = 1;
       bien_situado = false;
       tengo_bikini = false;
       tengo_zapatillas = false;
+      he_visto_precipicio = false;
+      girando_I = false;
+      girando_D = false;
+      inicio = true;
+      dimensiones = false;
+      //MATRIZ DE CASILLAS VISITADAS
+      for(int i = 0; i < 100; i++){
+        for(int j = 0; j < 100; j++){
+          visitas[i][j] = 0;
+        }
+      }
+      tiempo = 0;
+      min = 0;
+
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -35,9 +50,19 @@ class ComportamientoJugador : public Comportamiento{
   state current_state; 
   Orientacion brujula;
   Action last_action;
-  bool girar_derecha;
+  int girar_derecha;
+  int n_casillas;
   bool bien_situado;
   bool tengo_bikini;
   bool tengo_zapatillas;
+  bool he_visto_precipicio;
+  bool girando_I;
+  bool girando_D;
+  bool inicio;
+  bool dimensiones;
+  int visitas[100][100];
+  int tiempo;
+  int min;
+  bool moverse;
 };
 #endif

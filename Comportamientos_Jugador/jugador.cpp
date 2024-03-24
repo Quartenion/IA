@@ -183,33 +183,215 @@ Action ComportamientoJugador::think(Sensores sensores)
 	}
 	
 	//RECOGER BIKINI
-	if(sensores.terreno[2] == 'K' and !tengo_bikini){
+	if(sensores.terreno[0] == 'K' and !tengo_bikini){
 		tengo_bikini = true;
 	}
 
 	//RECOGER ZAPATILLAS
-	if(sensores.terreno[2] == 'D' and !tengo_zapatillas){
+	if(sensores.terreno[0] == 'D' and !tengo_zapatillas){
 		tengo_zapatillas = true;
 	}
 
+	//ACTUALIZAR CASILLAS VISITADAS
+	if(dimensiones){
+		for(int i = 0; i < 100; i++){
+			for(int j = 0; j < 100; j++){
+				if(i-2 > n_casillas or j-2 > n_casillas or i < 3 or j < 3){
+					visitas[i][j] = 3000;				
+				}
+				else if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
+					visitas[i][j] = 3000;
+				}
+			}
+		}
+	}
+
+	
+	for(int i = 0; i < 30; i++){
+		for(int j = 0; j < 30; j++){
+			std::cout << visitas[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "MIN = " << min << endl;
+	tiempo++;
+	visitas[current_state.fil][current_state.col] = tiempo;
+	
+	
+
 	//Decir la nueva accion
-	if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'K' or sensores.terreno[2] == 'D') and sensores.agentes[2] == '_' ){
-		accion = actWALK;
+	
+	switch(sensores.nivel){
+		case 0 : 
+			if(girando_I){
+				accion = actTURN_L;
+				girando_I = false;
+				moverse = true;
+			}
+			else if(girando_D){
+				accion = actTURN_SR;
+				girando_D = false;
+				moverse = true;
+			}
+			else if(sensores.terreno[2] == 'P' and !he_visto_precipicio){
+				accion = actTURN_L;
+				he_visto_precipicio = true;
+				girando_I = true;
+				n_casillas = 1;
+			}
+			else if(sensores.terreno[2] == 'P' and he_visto_precipicio and inicio){
+				inicio = false;
+				dimensiones = true;
+				std::cout << "He contado " << n_casillas << " casillas" << std::endl;
+				accion = actTURN_L;
+			}
+			else if(inicio){
+				accion = actWALK;
+				n_casillas++;
+			}
+			
+			else{
+				switch(current_state.brujula){
+					case norte: 
+						min = visitas[current_state.fil-1][current_state.col];
+						if(moverse){
+							accion = actWALK;
+							moverse = false;
+						}
+						else if(visitas[current_state.fil][current_state.col+1] < min){
+							//ESTE
+							accion = actTURN_SR;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil][current_state.col-1] < min){
+							//OESTE
+							accion = actTURN_L;
+							moverse = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col] < min){
+							//SUR
+							accion = actTURN_L;
+							girando_I = true;
+						}
+						else{
+							accion = actWALK;
+						}
+					break;
+
+					case este:
+						min = visitas[current_state.fil][current_state.col+1];
+						if(moverse){
+							accion = actWALK;
+							moverse = false;
+						}
+						else if(visitas[current_state.fil-1][current_state.col] < min){
+							//NORTE
+							accion = actTURN_L;
+							moverse = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col] < min){
+							//SUR
+							accion = actTURN_SR;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil][current_state.col-1] < min){
+							//OESTE
+							accion = actTURN_L;
+							girando_I = true;
+						}
+						else{
+							accion = actWALK;
+						}
+					break;
+
+					case sur:
+						min = visitas[current_state.fil+1][current_state.col];
+						if(moverse){
+							accion = actWALK;
+							moverse = false;
+						}
+						else if(visitas[current_state.fil][current_state.col+1] < min){
+							//ESTE
+							cout << visitas[current_state.fil][current_state.col+1] << " " << min << endl;
+							accion = actTURN_L;
+							moverse = true;
+						}
+						else if(visitas[current_state.fil][current_state.col-1] < min){
+							//OESTE
+							cout << visitas[current_state.fil][current_state.col-1] << " " << min << endl;
+							accion = actTURN_SR;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil-1][current_state.col] < min){
+							//NORTE
+							cout << visitas[current_state.fil-1][current_state.col] << " " << min << endl;
+							accion = actTURN_L;
+							girando_I = true;
+						}
+						else{
+							accion = actWALK;
+						}
+					break;
+
+					case oeste:
+						min = visitas[current_state.fil][current_state.col-1];
+						if(moverse){
+							accion = actWALK;
+							moverse = false;
+						}
+						else if(visitas[current_state.fil-1][current_state.col] < min){
+							//NORTE
+							accion = actTURN_SR;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col] < min){
+							//SUR
+							accion = actTURN_L;
+							moverse = true;
+						}
+						else if(visitas[current_state.fil][current_state.col+1] < min){
+							//ESTE
+							accion = actTURN_L;
+							girando_I = true;
+						}
+						else{
+							accion = actWALK;
+						}
+					break;
+				}
+			}
+			/*
+			
+			else if (sensores.terreno[2] != 'P' and sensores.terreno[2] != 'M' and sensores.terreno[2] != 'A' and sensores.terreno[2] != 'B' and sensores.agentes[2] == '_'){
+				accion = actWALK;
+			}
+			else if(sensores.bateria < 2000 and sensores.terreno[2] == 'X'){
+				accion = actIDLE;
+			}
+			else if(tengo_bikini and sensores.terreno[2] == 'A'){
+				accion = actWALK;
+			}
+			else if(tengo_zapatillas and sensores.terreno[2] == 'B'){
+				accion = actWALK;
+			}
+			else if( !girar_derecha ){
+				accion = actTURN_L;
+				girar_derecha = (rand()%2 == 0);
+			}
+			else{
+				accion = actTURN_SR;
+				girar_derecha = (rand()%2 == 0);
+			}
+			*/
+			
+		break;
+		case 1 : break;
+		case 2 : break;
+		case 3 : break;
 	}
-	else if(tengo_bikini and sensores.terreno[2] == 'A'){
-		accion = actWALK;
-	}
-	else if(tengo_zapatillas and sensores.terreno[2] == 'B'){
-		accion = actWALK;
-	}
-	else if( !girar_derecha ){
-		accion = actTURN_L;
-		girar_derecha = (rand()%2 == 0);
-	}
-	else{
-		accion = actTURN_SR;
-		girar_derecha = (rand()%2 == 0);
-	}
+
+	
+	
 
 	//Recordar la ultima accion
 	last_action = accion;
@@ -218,29 +400,29 @@ Action ComportamientoJugador::think(Sensores sensores)
     \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////////////////
 
 	// Mostrar el valor de los sensores
-	cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC;
+	std::cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC;
 	switch (sensores.sentido)
 	{
-		case norte:	  cout << " Norte\n";	break;
-		case noreste: cout << " Noreste\n";	break;
-		case este:    cout << " Este\n";	break;
-		case sureste: cout << " Sureste\n";	break;
-		case sur:     cout << " Sur\n";	break;
-		case suroeste:cout << " Suroeste\n";	break;
-		case oeste:   cout << " Oeste\n";	break;
-		case noroeste:cout << " Noroeste\n";	break;
+		case norte:	  std::cout << " Norte\n";	break;
+		case noreste: std::cout << " Noreste\n";	break;
+		case este:    std::cout << " Este\n";	break;
+		case sureste: std::cout << " Sureste\n";	break;
+		case sur:     std::cout << " Sur\n";	break;
+		case suroeste:std::cout << " Suroeste\n";	break;
+		case oeste:   std::cout << " Oeste\n";	break;
+		case noroeste:std::cout << " Noroeste\n";	break;
 	}
-	cout << "Terreno: ";
+	std::cout << "Terreno: ";
 	for (int i=0; i<sensores.terreno.size(); i++)
-		cout << sensores.terreno[i];
+		std::cout << sensores.terreno[i];
 
-	cout << "  Agentes: ";
+	std::cout << "  Agentes: ";
 	for (int i=0; i<sensores.agentes.size(); i++)
-		cout << sensores.agentes[i];
+		std::cout << sensores.agentes[i];
 
-	cout << "\nColision: " << sensores.colision;
-	cout << "  Reset: " << sensores.reset;
-	cout << "  Vida: " << sensores.vida << endl<< endl;
+	std::cout << "\nColision: " << sensores.colision;
+	std::cout << "  Reset: " << sensores.reset;
+	std::cout << "  Vida: " << sensores.vida << endl<< endl;
 
 	return accion;
 }
