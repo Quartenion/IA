@@ -58,6 +58,8 @@ class ComportamientoJugador : public Comportamiento{
   bool he_visto_precipicio;
   bool girando_I;
   bool girando_D;
+  bool girar_MAS_D;
+  bool girar_MAS_I;
   bool inicio;
   bool dimensiones;
   int visitas[100][100];
