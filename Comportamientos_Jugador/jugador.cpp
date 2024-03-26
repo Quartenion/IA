@@ -193,30 +193,29 @@ Action ComportamientoJugador::think(Sensores sensores)
 	}
 
 	//ACTUALIZAR CASILLAS VISITADAS
-	if(dimensiones){
-		for(int i = 0; i < 100; i++){
-			for(int j = 0; j < 100; j++){
-				if(i-2 > n_casillas or j-2 > n_casillas or i < 3 or j < 3){
-					visitas[i][j] = 3000;				
-				}
-				else if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
-					visitas[i][j] = 3000;
-				}
-			}
-		}
+	n_casillas = mapaResultado.size();
+	cout << "CASILLAS: " << n_casillas << endl;
 
-		//MOSTRAR MATRIZ VISITAS EN TERMINAL
-		for(int i = 0; i < n_casillas+6; i++){
-			for(int j = 0; j < n_casillas+6; j++){
-				std::cout << visitas[i][j] << " ";
+	for(int i = 0 ; i < n_casillas ; i++){
+		for(int j = 0;  j < n_casillas ; j++){
+			if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
+				visitas[i][j] = 3000;
 			}
-			std::cout << std::endl;
 		}
-		std::cout << "MIN = " << min << endl;
 	}
 
 	tiempo++;
+	
 	visitas[current_state.fil][current_state.col] += 1;
+	//MOSTRAR CASILLAS VISITADAS POR PANTALLA
+	
+	for(int i = 0; i < n_casillas; i++){
+		for(int j = 0; j < n_casillas; j++){
+			cout << visitas[i][j] << " ";
+		}
+		cout << endl;
+	}
+	
 	
 	
 	//Decir la nueva accion
@@ -226,39 +225,31 @@ Action ComportamientoJugador::think(Sensores sensores)
 			if(girando_I){
 				accion = actTURN_L;
 				girando_I = false;
-				moverse = true;
+				if(inicio){
+					moverse = true;
+				}
+				
 			}
 			else if(girando_D){
 				accion = actTURN_SR;
 				girando_D = false;
-				moverse = true;
+				if(inicio){
+					moverse = true;
+				}
 			}
 			else if(girar_MAS_I){
 				accion = actTURN_L;
 				girar_MAS_I = false;
-				moverse = true;
+				if(inicio){
+					moverse = true;
+				}
 			}
 			else if(girar_MAS_D){
 				accion = actTURN_SR;
 				girar_MAS_D = false;
-				moverse = true;
-			}
-			else if(sensores.terreno[2] == 'P' and !he_visto_precipicio){
-				accion = actTURN_L;
-				he_visto_precipicio = true;
-				girando_I = true;
-				n_casillas = 1;
-			}
-			else if(sensores.terreno[2] == 'P' and he_visto_precipicio and inicio){
-				inicio = false;
-				dimensiones = true;
-				moverse = false;
-				std::cout << "He contado " << n_casillas << " casillas" << std::endl;
-				accion = actTURN_L;
-			}
-			else if(inicio){
-				accion = actWALK;
-				n_casillas++;
+				if(inicio){
+					moverse = true;
+				}
 			}
 			else if(sensores.terreno[0] == 'X' and sensores.bateria < 2000){
 				accion = actIDLE;
@@ -270,6 +261,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 			
 			else{
 				min = 3000;
+				inicio = true;
 				for(int i = -1; i < 2 ;i++){
 					for(int j = -1; j < 2 ;j++){
 						if(visitas[current_state.fil+i][current_state.col+j] < min and !(i == 0 and j == 0)){
@@ -278,7 +270,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 					}
 				}
 
-				cout << "-=+=-EL MINIMO DEBE DE SER: " << min << "-=+=-" <<endl;
 				switch(current_state.brujula){
 					case norte: 
 						if(visitas[current_state.fil-1][current_state.col] == min){
@@ -290,10 +281,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							accion = actTURN_SR;
 							moverse = true;
 						}
+						else if(visitas[current_state.fil][current_state.col-1] == min){
+							//OESTE
+							accion = actTURN_L;
+							moverse = true;
+						}
 						else if(visitas[current_state.fil][current_state.col+1] == min){
 							//ESTE
 							accion = actTURN_SR;
 							girando_D = true;
+						}
+						else if(visitas[current_state.fil-1][current_state.col-1] == min){
+							//NOROESTE
+							accion = actTURN_L;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col] == min){
+							//SUR
+							accion = actTURN_L;
+							girando_I = true;
 						}
 						else if(visitas[current_state.fil+1][current_state.col+1] == min){
 							//SURESTE
@@ -301,27 +307,14 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							girando_I = true;
-						}
 						else if(visitas[current_state.fil+1][current_state.col-1] == min){
 							//SUROESTE
 							accion = actTURN_L;
 							girando_I = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
+						
+						
 					break;
 
 					case noreste:
@@ -334,10 +327,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							accion = actTURN_SR;
 							moverse = true;
 						}
+						else if(visitas[current_state.fil-1][current_state.col-1] == min){
+							//NOROESTE
+							accion = actTURN_L;
+							moverse = true;
+						}
 						else if(visitas[current_state.fil+1][current_state.col+1] == min){
 							//SURESTE
 							accion = actTURN_SR;
 							girando_D = true;
+						}
+						else if(visitas[current_state.fil-1][current_state.col] == min){
+							//NORTE
+							accion = actTURN_L;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col-1] == min){
+							//SUROESTE
+							accion = actTURN_L;
+							girando_I = true;
 						}
 						else if(visitas[current_state.fil+1][current_state.col] == min){
 							//SUR
@@ -345,27 +353,14 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
 						else if(visitas[current_state.fil][current_state.col-1] == min){
 							//OESTE
 							accion = actTURN_L;
 							girando_I = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
+						
+						
 					break;
 
 					case este:
@@ -373,19 +368,14 @@ Action ComportamientoJugador::think(Sensores sensores)
 							//ESTE
 							accion = actWALK;
 						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
 						else if(visitas[current_state.fil+1][current_state.col+1] == min){
 							//SURESTE
 							accion = actTURN_SR;
+							moverse = true;
+						}
+						else if(visitas[current_state.fil-1][current_state.col] == min){
+							//NORTE
+							accion = actTURN_L;
 							moverse = true;
 						}
 						else if(visitas[current_state.fil+1][current_state.col] == min){
@@ -393,16 +383,21 @@ Action ComportamientoJugador::think(Sensores sensores)
 							accion = actTURN_SR;
 							girando_D = true;
 						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_SR;
+						else if(visitas[current_state.fil-1][current_state.col+1] == min){
+							//NORESTE
+							accion = actTURN_L;
 							girando_D = true;
-							girar_MAS_D = true;
 						}
 						else if(visitas[current_state.fil][current_state.col-1] == min){
 							//OESTE
 							accion = actTURN_L;
 							girando_I = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col-1] == min){
+							//SUROESTE
+							accion = actTURN_SR;
+							girando_D = true;
+							girar_MAS_D = true;
 						}
 						else if(visitas[current_state.fil-1][current_state.col-1] == min){
 							//NOROESTE
@@ -422,10 +417,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							accion = actTURN_SR;
 							moverse = true;
 						}
+						else if(visitas[current_state.fil-1][current_state.col+1] == min){
+							//NORESTE
+							accion = actTURN_L;
+							moverse = true;
+						}
 						else if(visitas[current_state.fil+1][current_state.col-1] == min){
 							//SUROESTE
 							accion = actTURN_SR;
 							girando_D = true;
+						}
+						else if(visitas[current_state.fil][current_state.col+1] == min){
+							//ESTE
+							accion = actTURN_L;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil-1][current_state.col-1] == min){
+							//NOROESTE
+							accion = actTURN_L;
+							girando_I = true;
 						}
 						else if(visitas[current_state.fil][current_state.col-1] == min){
 							//OESTE
@@ -433,27 +443,14 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
 						else if(visitas[current_state.fil-1][current_state.col] == min){
 							//NORTE
 							accion = actTURN_L;
 							girando_I = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
+						
+						
 					break;
 
 					case sur:
@@ -461,21 +458,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							//SUR
 							accion = actWALK;
 						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_L;
-							girando_D = true;
+						else if(visitas[current_state.fil+1][current_state.col-1] == min){
+							//SUROESTE
+							accion = actTURN_SR;
+							moverse = true;
 						}
 						else if(visitas[current_state.fil][current_state.col+1] == min){
 							//ESTE
 							accion = actTURN_L;
 							moverse = true;
 						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
+						else if(visitas[current_state.fil][current_state.col-1] == min){
+							//OESTE
+							accion = actTURN_SR;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col+1] == min){
+							//SURESTE
 							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
+							girando_D = true;
 						}
 						else if(visitas[current_state.fil-1][current_state.col] == min){
 							//NORTE
@@ -488,15 +489,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_SR;
-							moverse = true;
+						else if(visitas[current_state.fil-1][current_state.col+1] == min){
+							//NORESTE
+							accion = actTURN_L;
+							girando_I = true;
+							girar_MAS_D = true;
 						}
 					break;
 
@@ -510,10 +507,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							accion = actTURN_SR;
 							moverse = true;
 						}
+						else if(visitas[current_state.fil+1][current_state.col+1] == min){
+							//SURESTE
+							accion = actTURN_L;
+							moverse = true;
+						}
 						else if(visitas[current_state.fil-1][current_state.col-1] == min){
 							//NOROESTE
 							accion = actTURN_SR;
 							girando_D = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col] == min){
+							//SUR
+							accion = actTURN_L;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil-1][current_state.col+1] == min){
+							//NORESTE
+							accion = actTURN_L;
+							girando_I = true;
 						}
 						else if(visitas[current_state.fil-1][current_state.col] == min){
 							//NORTE
@@ -521,28 +533,12 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
 						else if(visitas[current_state.fil][current_state.col+1] == min){
 							//ESTE
 							accion = actTURN_L;
 							girando_I = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						
 					break;
 
 					case oeste:
@@ -555,10 +551,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							accion = actTURN_SR;
 							moverse = true;
 						}
+						else if(visitas[current_state.fil+1][current_state.col] == min){
+							//SUR
+							accion = actTURN_L;
+							moverse = true;
+						}
 						else if(visitas[current_state.fil-1][current_state.col] == min){
 							//NORTE
 							accion = actTURN_SR;
 							girando_D = true;
+						}
+						else if(visitas[current_state.fil+1][current_state.col-1] == min){
+							//SUROESTE
+							accion = actTURN_L;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil][current_state.col+1] == min){
+							//ESTE
+							accion = actTURN_L;
+							girando_I = true;
 						}
 						else if(visitas[current_state.fil-1][current_state.col+1] == min){
 							//NORESTE
@@ -566,26 +577,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
 						else if(visitas[current_state.fil+1][current_state.col+1] == min){
 							//SURESTE
 							accion = actTURN_L;
 							girando_I = true;
 							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_L;
-							girando_D = true;
 						}
 					break;
 
@@ -594,21 +590,25 @@ Action ComportamientoJugador::think(Sensores sensores)
 							//NOROESTE
 							accion = actWALK;
 						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_L;
-							girando_D = true;
+						else if(visitas[current_state.fil-1][current_state.col] == min){
+							//NORTE
+							accion = actTURN_SR;
+							moverse = true;
 						}
 						else if(visitas[current_state.fil+1][current_state.col-1] == min){
 							//SUROESTE
 							accion = actTURN_L;
 							moverse = true;
 						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
+						else if(visitas[current_state.fil-1][current_state.col+1] == min){
+							//NORESTE
+							accion = actTURN_SR;
+							girando_D = true;
+						}
+						else if(visitas[current_state.fil][current_state.col-1] == min){
+							//OESTE
 							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
+							girando_D = true;
 						}
 						else if(visitas[current_state.fil+1][current_state.col+1] == min){
 							//SURESTE
@@ -621,15 +621,11 @@ Action ComportamientoJugador::think(Sensores sensores)
 							girando_D = true;
 							girar_MAS_D = true;
 						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_SR;
-							moverse = true;
+						else if(visitas[current_state.fil+1][current_state.col] == min){
+							//SUR
+							accion = actTURN_L;
+							girando_I = true;
+							girar_MAS_D = true;
 						}
 					break;
 				}

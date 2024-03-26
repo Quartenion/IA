@@ -26,7 +26,7 @@ class ComportamientoJugador : public Comportamiento{
       he_visto_precipicio = false;
       girando_I = false;
       girando_D = false;
-      inicio = true;
+      inicio = false;
       dimensiones = false;
       //MATRIZ DE CASILLAS VISITADAS
       for(int i = 0; i < 100; i++){
