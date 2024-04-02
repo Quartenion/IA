@@ -19,23 +19,25 @@ class ComportamientoJugador : public Comportamiento{
       current_state.brujula = norte;
       last_action = actIDLE;
       girar_derecha = 0;
-      n_casillas = 1;
       bien_situado = false;
       tengo_bikini = false;
       tengo_zapatillas = false;
-      he_visto_precipicio = false;
       girando_I = false;
       girando_D = false;
+      girar_MAS_I = false;
+      girar_MAS_D = false;
       inicio = false;
-      dimensiones = false;
       //MATRIZ DE CASILLAS VISITADAS
       for(int i = 0; i < 100; i++){
         for(int j = 0; j < 100; j++){
           visitas[i][j] = 0;
         }
       }
-      tiempo = 0;
       min = 0;
+      moverse = false;
+      n_casillas = 1;
+      time = 0;
+      orientado = false;
 
     }
 
@@ -45,26 +47,23 @@ class ComportamientoJugador : public Comportamiento{
     Action think(Sensores sensores);
     int interact(Action accion, int valor);
 
+    Action nextMove(Sensores sensores);
+
   private:
   // Declarar aquí las variables de estado
   state current_state; 
   Orientacion brujula;
   Action last_action;
   int girar_derecha;
-  int n_casillas;
   bool bien_situado;
-  bool tengo_bikini;
-  bool tengo_zapatillas;
-  bool he_visto_precipicio;
-  bool girando_I;
-  bool girando_D;
-  bool girar_MAS_D;
-  bool girar_MAS_I;
+  bool tengo_bikini, tengo_zapatillas;
+  bool girando_I, girando_D, girar_MAS_I, girar_MAS_D;
   bool inicio;
-  bool dimensiones;
   int visitas[100][100];
-  int tiempo;
   int min;
   bool moverse;
+  int n_casillas;
+  int time;
+  bool orientado;
 };
 #endif

@@ -8,8 +8,9 @@ Action ComportamientoJugador::think(Sensores sensores)
 	Action accion = actIDLE;
 	int a;
 
-	//////////////////////////////////TUTORIAL\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////////////////
+// +-+-+-+-+-+-+-+-+
+// |T|U|T|O|R|I|A|L|
+// +-+-+-+-+-+-+-+-+
 	switch(last_action){
 		case actWALK: 
 			switch(current_state.brujula){
@@ -51,13 +52,17 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 	}
 
-	if(sensores.posF!= -1 and !bien_situado){
+	if(sensores.posF!= -1 and !bien_situado and orientado){
+        cout << "SITUADO" << endl;
 		current_state.fil = sensores.posF;
 		current_state.col = sensores.posC;
 		current_state.brujula = sensores.sentido;
 		bien_situado = true;
 	}
-	//VISIÓN DEL AGENTE
+	
+//+-+-+-+-+-+-+
+//|V|I|S|I|O|N|
+//+-+-+-+-+-+-+
 	if(bien_situado){
 		switch(current_state.brujula){
 			case norte: 
@@ -196,490 +201,138 @@ Action ComportamientoJugador::think(Sensores sensores)
 	n_casillas = mapaResultado.size();
 	cout << "CASILLAS: " << n_casillas << endl;
 
-	for(int i = 0 ; i < n_casillas ; i++){
-		for(int j = 0;  j < n_casillas ; j++){
-			if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
-				visitas[i][j] = 3000;
+	if(orientado){
+		for(int i = 0 ; i < n_casillas ; i++){
+			for(int j = 0;  j < n_casillas ; j++){
+				if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
+					visitas[i][j] = 3000;
+				}
+                else if(i < 3 or j < 3 or i > n_casillas-3 or j > n_casillas-3){
+                    visitas[i][j] = 3000;
+                }
 			}
 		}
-	}
-
-	tiempo++;
-	
-	visitas[current_state.fil][current_state.col] += 1;
-	//MOSTRAR CASILLAS VISITADAS POR PANTALLA
-	
-	for(int i = 0; i < n_casillas; i++){
-		for(int j = 0; j < n_casillas; j++){
-			cout << visitas[i][j] << " ";
+		//time++;
+		visitas[current_state.fil][current_state.col]++;
+		
+		
+		//MOSTRAR CASILLAS VISITADAS POR PANTALLA
+		
+		for(int i = 0; i < n_casillas; i++){
+			for(int j = 0; j < n_casillas; j++){
+				cout << visitas[i][j] << " ";
+			}
+			cout << endl;
 		}
-		cout << endl;
 	}
-	
 	
 	
 	//Decir la nueva accion
 	
 	switch(sensores.nivel){
 		case 0 : 
-			if(girando_I){
-				accion = actTURN_L;
-				girando_I = false;
-				if(inicio){
-					moverse = true;
+			//Todo el sistema sensorial funciona correctamente y el agente es el único agente que está en la simulación.
+			orientado = true;
+            accion = nextMove(sensores);
+		break;
+		case 1 : 
+			/*
+			No funciona los sensores de posicionamiento posF, posC y sentido
+			(dan siempre el valor -1 los dos primeros y siempre norte el último). 
+			Inicialmente el agente empieza con orientación norte. Para poder 
+			situarse en el mapa se utilizan las casillas de Posicionamiento. En 
+			esas casillas, los sensores darán los valores correctos.
+			*/
+			if(!orientado){
+				if(sensores.terreno[0] == 'G'){
+					orientado = true;
 				}
-				
-			}
-			else if(girando_D){
-				accion = actTURN_SR;
-				girando_D = false;
-				if(inicio){
-					moverse = true;
-				}
-			}
-			else if(girar_MAS_I){
-				accion = actTURN_L;
-				girar_MAS_I = false;
-				if(inicio){
-					moverse = true;
-				}
-			}
-			else if(girar_MAS_D){
-				accion = actTURN_SR;
-				girar_MAS_D = false;
-				if(inicio){
-					moverse = true;
-				}
-			}
-			else if(sensores.terreno[0] == 'X' and sensores.bateria < 2000){
-				accion = actIDLE;
-			}
-			else if(moverse){
-				accion = actWALK;
-				moverse = false;
-			}
-			
-			else{
-				min = 3000;
-				inicio = true;
-				for(int i = -1; i < 2 ;i++){
-					for(int j = -1; j < 2 ;j++){
-						if(visitas[current_state.fil+i][current_state.col+j] < min and !(i == 0 and j == 0)){
-							min = visitas[current_state.fil+i][current_state.col+j];
-						}
+				else{
+					if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
+						accion = actWALK;
+					}
+					else if( !girar_derecha ){
+						accion = actTURN_L;
+						girar_derecha = (rand()%5 == 0);
+					}
+					else{
+						accion = actTURN_SR;
+						girar_derecha = (rand()%2 == 0);
 					}
 				}
-
-				switch(current_state.brujula){
-					case norte: 
-						if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-						
-						
-					break;
-
-					case noreste:
-						if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-						
-						
-					break;
-
-					case este:
-						if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-					break;
-
-					case sureste:
-						if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-						
-						
-					break;
-
-					case sur:
-						if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-					break;
-
-					case suroeste:
-						if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-					break;
-
-					case oeste:
-						if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-					break;
-
-					case noroeste:
-						if(visitas[current_state.fil-1][current_state.col-1] == min){
-							//NOROESTE
-							accion = actWALK;
-						}
-						else if(visitas[current_state.fil-1][current_state.col] == min){
-							//NORTE
-							accion = actTURN_SR;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col-1] == min){
-							//SUROESTE
-							accion = actTURN_L;
-							moverse = true;
-						}
-						else if(visitas[current_state.fil-1][current_state.col+1] == min){
-							//NORESTE
-							accion = actTURN_SR;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil][current_state.col-1] == min){
-							//OESTE
-							accion = actTURN_L;
-							girando_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col+1] == min){
-							//SURESTE
-							accion = actTURN_L;
-							girando_I = true;
-						}
-						else if(visitas[current_state.fil][current_state.col+1] == min){
-							//ESTE
-							accion = actTURN_SR;
-							girando_D = true;
-							girar_MAS_D = true;
-						}
-						else if(visitas[current_state.fil+1][current_state.col] == min){
-							//SUR
-							accion = actTURN_L;
-							girando_I = true;
-							girar_MAS_D = true;
-						}
-					break;
-				}
-			}
-			/*
-			
-			else if (sensores.terreno[2] != 'P' and sensores.terreno[2] != 'M' and sensores.terreno[2] != 'A' and sensores.terreno[2] != 'B' and sensores.agentes[2] == '_'){
-				accion = actWALK;
-			}
-			else if(sensores.bateria < 2000 and sensores.terreno[2] == 'X'){
-				accion = actIDLE;
-			}
-			else if(tengo_bikini and sensores.terreno[2] == 'A'){
-				accion = actWALK;
-			}
-			else if(tengo_zapatillas and sensores.terreno[2] == 'B'){
-				accion = actWALK;
-			}
-			else if( !girar_derecha ){
-				accion = actTURN_L;
-				girar_derecha = (rand()%2 == 0);
 			}
 			else{
-				accion = actTURN_SR;
-				girar_derecha = (rand()%2 == 0);
-			}
-			*/
-			
+				accion = nextMove(sensores);
+			}				
 		break;
-		case 1 : break;
-		case 2 : break;
-		case 3 : break;
+		case 2 : 
+			/*
+			La situación sensorial del nivel anterior, pero ahora en el mapa
+			pueden aparecer otros agentes como los aldeanos y los lobos. En este nivel se
+			deben gestionar las colisiones y los reinicios con estos agentes
+			*/
+			if(!orientado){
+				if(sensores.terreno[0] == 'G'){
+					orientado = true;
+				}
+				else{
+					if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
+						accion = actWALK;
+					}
+					else if( !girar_derecha ){
+						accion = actTURN_L;
+						girar_derecha = (rand()%5 == 0);
+					}
+					else{
+						accion = actTURN_SR;
+						girar_derecha = (rand()%2 == 0);
+					}
+				}
+			}
+			else{
+				if(sensores.reset){
+                    bien_situado = false;
+					orientado = false;
+				}
+				else if(sensores.agentes[2] != '_'){
+					if(!girar_derecha){
+						accion = actTURN_L;
+						girar_derecha = (rand()%5 == 0);
+					}
+					else{
+						accion = actTURN_SR;
+						girar_derecha = (rand()%2 == 0);
+					}
+				}
+				else{
+					accion = nextMove(sensores);
+				}
+			}	
+		break;
+		case 3 : 
+			/*
+			Las condiciones del nivel 2 pero en este caso, (1) la orientación es
+			desconocida al inicio, aunque se sabe que no es diagonal (es decir, es norte o
+			sur o este u oeste). Además, el sensor de visión del terreno no da información
+			sobre lo que aparece en las casillas 6, 11, 12 y 13.
+			*/
+		break;
 	}
-
-	
-	
 
 	//Recordar la ultima accion
 	last_action = accion;
-
-	//////////////////////////////////TUTORIAL\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////////////////
 
 	// Mostrar el valor de los sensores
 	std::cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC;
 	switch (sensores.sentido)
 	{
-		case norte:	  std::cout << " Norte\n";	break;
+		case norte:	  std::cout << " Norte\n";	    break;
 		case noreste: std::cout << " Noreste\n";	break;
-		case este:    std::cout << " Este\n";	break;
+		case este:    std::cout << " Este\n";	    break;
 		case sureste: std::cout << " Sureste\n";	break;
-		case sur:     std::cout << " Sur\n";	break;
+		case sur:     std::cout << " Sur\n";	    break;
 		case suroeste:std::cout << " Suroeste\n";	break;
-		case oeste:   std::cout << " Oeste\n";	break;
+		case oeste:   std::cout << " Oeste\n";	    break;
 		case noroeste:std::cout << " Noroeste\n";	break;
 	}
 	std::cout << "Terreno: ";
@@ -700,4 +353,411 @@ Action ComportamientoJugador::think(Sensores sensores)
 int ComportamientoJugador::interact(Action accion, int valor)
 {
 	return false;
+}
+
+Action ComportamientoJugador::nextMove(Sensores sensores) {
+    Action accion = actIDLE;
+    if (girando_I) {
+        accion = actTURN_L;
+        girando_I = false;
+        if (inicio) {
+            moverse = true;
+        }
+    } 
+    else if (girando_D) {
+        accion = actTURN_SR;
+        girando_D = false;
+        if (inicio) {
+            moverse = true;
+        }
+    } 
+    else if (girar_MAS_I) {
+        accion = actTURN_L;
+        girar_MAS_I = false;
+        if (inicio) {
+            moverse = true;
+        }
+    } 
+    else if (girar_MAS_D) {
+        accion = actTURN_SR;
+        girar_MAS_D = false;
+        if (inicio) {
+            moverse = true;
+        }
+    } 
+    else if (sensores.terreno[0] == 'X' and sensores.bateria < 2000) {
+        accion = actIDLE;
+        visitas[current_state.fil][current_state.col] = 0;
+    } 
+    else if (moverse) {
+        accion = actWALK;
+        moverse = false;
+    } 
+    else {
+        min = 3000;
+        inicio = true;
+        cout << "EMPEZANDO" << endl;
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (visitas[current_state.fil + i][current_state.col + j] < min and !(i == 0 and j == 0)) {
+                    min = visitas[current_state.fil + i][current_state.col + j];
+                }
+            }
+        }
+
+        switch (current_state.brujula) {
+            case norte:
+                if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+
+            case noreste:
+                if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+
+            case este:
+                if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+
+            case sureste:
+                if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_L;
+                    moverse = true;
+                }
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }   
+            break;
+
+            case sur:
+                if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+
+            case suroeste:
+                if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+
+            case oeste:
+                if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+
+            case noroeste:
+                if (visitas[current_state.fil - 1][current_state.col - 1] == min) {
+                    // NOROESTE
+                    accion = actWALK;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col] == min) {
+                    // NORTE
+                    accion = actTURN_SR;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col - 1] == min) {
+                    // SUROESTE
+                    accion = actTURN_L;
+                    moverse = true;
+                } 
+                else if (visitas[current_state.fil - 1][current_state.col + 1] == min) {
+                    // NORESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col - 1] == min) {
+                    // OESTE
+                    accion = actTURN_L;
+                    girando_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col + 1] == min) {
+                    // SURESTE
+                    accion = actTURN_L;
+                    girando_I = true;
+                } 
+                else if (visitas[current_state.fil][current_state.col + 1] == min) {
+                    // ESTE
+                    accion = actTURN_SR;
+                    girando_D = true;
+                    girar_MAS_D = true;
+                } 
+                else if (visitas[current_state.fil + 1][current_state.col] == min) {
+                    // SUR
+                    accion = actTURN_L;
+                    girando_I = true;
+                    girar_MAS_D = true;
+                }
+            break;
+        }
+    }
+    return accion;
 }
