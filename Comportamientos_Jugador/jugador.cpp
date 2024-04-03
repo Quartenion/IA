@@ -68,7 +68,9 @@ Action ComportamientoJugador::think(Sensores sensores)
 			case norte: 
 				for(int i = 0; i < 4 ;i++){
 					for(int j = 0; j < 2*i + 1; j++){
-						mapaResultado[current_state.fil-i][current_state.col-i+j] = sensores.terreno[i*i+j];
+                        if(!(sensores.nivel == 3 and (i*i+j == 6 or i*i+j == 11 or i*i+j == 12 or i*i+j == 13))){
+						    mapaResultado[current_state.fil-i][current_state.col-i+j] = sensores.terreno[i*i+j];
+                        }
 					}
 				}
 			break;
@@ -82,15 +84,19 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 				mapaResultado[current_state.fil-2][current_state.col] = sensores.terreno[4];
 				mapaResultado[current_state.fil-2][current_state.col+1] = sensores.terreno[5];
-				mapaResultado[current_state.fil-2][current_state.col+2] = sensores.terreno[6];
+                if(sensores.nivel != 3){
+                    mapaResultado[current_state.fil-2][current_state.col+2] = sensores.terreno[6];
+                }
 				mapaResultado[current_state.fil-1][current_state.col+2] = sensores.terreno[7];
 				mapaResultado[current_state.fil][current_state.col+2] = sensores.terreno[8];
 
 				mapaResultado[current_state.fil-3][current_state.col] = sensores.terreno[9];
 				mapaResultado[current_state.fil-3][current_state.col+1] = sensores.terreno[10];
-				mapaResultado[current_state.fil-3][current_state.col+2] = sensores.terreno[11];
-				mapaResultado[current_state.fil-3][current_state.col+3] = sensores.terreno[12];
-				mapaResultado[current_state.fil-2][current_state.col+3] = sensores.terreno[13];
+                if(sensores.nivel != 3){
+                    mapaResultado[current_state.fil-3][current_state.col+2] = sensores.terreno[11];
+                    mapaResultado[current_state.fil-3][current_state.col+3] = sensores.terreno[12];
+                    mapaResultado[current_state.fil-2][current_state.col+3] = sensores.terreno[13];
+                }
 				mapaResultado[current_state.fil-1][current_state.col+3] = sensores.terreno[14];
 				mapaResultado[current_state.fil][current_state.col+3] = sensores.terreno[15];
 			break;
@@ -98,7 +104,10 @@ Action ComportamientoJugador::think(Sensores sensores)
 			case este: 
 				for(int i = 0; i < 4 ;i++){
 					for(int j = 0; j < 2*i + 1; j++){
-						mapaResultado[current_state.fil-i+j][current_state.col+i] = sensores.terreno[i*i+j];
+                        if(!(sensores.nivel == 3 and (i*i+j == 6 or i*i+j == 11 or i*i+j == 12 or i*i+j == 13))){
+                            mapaResultado[current_state.fil-i+j][current_state.col+i] = sensores.terreno[i*i+j];  
+                        }
+						
 					}
 				}
 			break;
@@ -112,15 +121,19 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 				mapaResultado[current_state.fil+2][current_state.col] = sensores.terreno[8];
 				mapaResultado[current_state.fil+2][current_state.col+1] = sensores.terreno[7];
-				mapaResultado[current_state.fil+2][current_state.col+2] = sensores.terreno[6];
+                if(sensores.nivel != 3){
+				    mapaResultado[current_state.fil+2][current_state.col+2] = sensores.terreno[6];
+                }
 				mapaResultado[current_state.fil+1][current_state.col+2] = sensores.terreno[5];
 				mapaResultado[current_state.fil][current_state.col+2] = sensores.terreno[4];
 
 				mapaResultado[current_state.fil+3][current_state.col] = sensores.terreno[15];
 				mapaResultado[current_state.fil+3][current_state.col+1] = sensores.terreno[14];
-				mapaResultado[current_state.fil+3][current_state.col+2] = sensores.terreno[13];
-				mapaResultado[current_state.fil+3][current_state.col+3] = sensores.terreno[12];
-				mapaResultado[current_state.fil+2][current_state.col+3] = sensores.terreno[11];
+                if(sensores.nivel != 3){
+                    mapaResultado[current_state.fil+3][current_state.col+2] = sensores.terreno[13];
+                    mapaResultado[current_state.fil+3][current_state.col+3] = sensores.terreno[12];
+                    mapaResultado[current_state.fil+2][current_state.col+3] = sensores.terreno[11];
+                }
 				mapaResultado[current_state.fil+1][current_state.col+3] = sensores.terreno[10];
 				mapaResultado[current_state.fil][current_state.col+3] = sensores.terreno[9];
 			break;
@@ -128,7 +141,9 @@ Action ComportamientoJugador::think(Sensores sensores)
 			case sur: 
 				for(int i = 0; i < 4 ;i++){
 					for(int j = 2*i; j >= 0; j--){
-						mapaResultado[current_state.fil+i][current_state.col+i-j] = sensores.terreno[i*i+j];
+                        if(!(sensores.nivel == 3 and (i*i+j == 6 or i*i+j == 11 or i*i+j == 12 or i*i+j == 13))){
+						    mapaResultado[current_state.fil+i][current_state.col+i-j] = sensores.terreno[i*i+j];
+                        }
 					}
 				}
 			break;
@@ -142,15 +157,19 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 				mapaResultado[current_state.fil+2][current_state.col] = sensores.terreno[4];
 				mapaResultado[current_state.fil+2][current_state.col-1] = sensores.terreno[5];
-				mapaResultado[current_state.fil+2][current_state.col-2] = sensores.terreno[6];
+                if(sensores.nivel != 3){
+				    mapaResultado[current_state.fil+2][current_state.col-2] = sensores.terreno[6];
+                }
 				mapaResultado[current_state.fil+1][current_state.col-2] = sensores.terreno[7];
 				mapaResultado[current_state.fil][current_state.col-2] = sensores.terreno[8];
 
 				mapaResultado[current_state.fil+3][current_state.col] = sensores.terreno[9];
 				mapaResultado[current_state.fil+3][current_state.col-1] = sensores.terreno[10];
-				mapaResultado[current_state.fil+3][current_state.col-2] = sensores.terreno[11];
-				mapaResultado[current_state.fil+3][current_state.col-3] = sensores.terreno[12];
-				mapaResultado[current_state.fil+2][current_state.col-3] = sensores.terreno[13];
+                if(sensores.nivel != 3){
+                    mapaResultado[current_state.fil+3][current_state.col-2] = sensores.terreno[11];
+                    mapaResultado[current_state.fil+3][current_state.col-3] = sensores.terreno[12];
+                    mapaResultado[current_state.fil+2][current_state.col-3] = sensores.terreno[13];
+                }
 				mapaResultado[current_state.fil+1][current_state.col-3] = sensores.terreno[14];
 				mapaResultado[current_state.fil][current_state.col-3] = sensores.terreno[15];
 			break;
@@ -158,7 +177,9 @@ Action ComportamientoJugador::think(Sensores sensores)
 			case oeste: 
 				for(int i = 0; i < 4 ;i++){
 					for(int j = 2*i; j >= 0; j--){
-						mapaResultado[current_state.fil+i-j][current_state.col-i] = sensores.terreno[i*i+j];
+                        if(!(sensores.nivel == 3 and (i*i+j == 6 or i*i+j == 11 or i*i+j == 12 or i*i+j == 13))){
+                            mapaResultado[current_state.fil+i-j][current_state.col-i] = sensores.terreno[i*i+j];
+                        }
 					}
 				}
 			break;
@@ -172,15 +193,19 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 				mapaResultado[current_state.fil-2][current_state.col] = sensores.terreno[8];
 				mapaResultado[current_state.fil-2][current_state.col-1] = sensores.terreno[7];
-				mapaResultado[current_state.fil-2][current_state.col-2] = sensores.terreno[6];
+                if(sensores.nivel != 3){
+				    mapaResultado[current_state.fil-2][current_state.col-2] = sensores.terreno[6];
+                }
 				mapaResultado[current_state.fil-1][current_state.col-2] = sensores.terreno[5];
 				mapaResultado[current_state.fil][current_state.col-2] = sensores.terreno[4];
 
 				mapaResultado[current_state.fil-3][current_state.col] = sensores.terreno[15];
 				mapaResultado[current_state.fil-3][current_state.col-1] = sensores.terreno[14];
-				mapaResultado[current_state.fil-3][current_state.col-2] = sensores.terreno[13];
-				mapaResultado[current_state.fil-3][current_state.col-3] = sensores.terreno[12];
-				mapaResultado[current_state.fil-2][current_state.col-3] = sensores.terreno[11];
+                if(sensores.nivel != 3){
+                    mapaResultado[current_state.fil-3][current_state.col-2] = sensores.terreno[13];
+                    mapaResultado[current_state.fil-3][current_state.col-3] = sensores.terreno[12];
+                    mapaResultado[current_state.fil-2][current_state.col-3] = sensores.terreno[11];
+                }
 				mapaResultado[current_state.fil-1][current_state.col-3] = sensores.terreno[10];
 				mapaResultado[current_state.fil][current_state.col-3] = sensores.terreno[9];
 			break;
@@ -201,7 +226,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 	n_casillas = mapaResultado.size();
 	cout << "CASILLAS: " << n_casillas << endl;
 
-	if(orientado){
+	if(orientado or sensores.nivel == 0){
 		for(int i = 0 ; i < n_casillas ; i++){
 			for(int j = 0;  j < n_casillas ; j++){
 				if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
@@ -212,8 +237,8 @@ Action ComportamientoJugador::think(Sensores sensores)
                 }
 			}
 		}
-		//time++;
-		visitas[current_state.fil][current_state.col]++;
+		time++;
+		visitas[current_state.fil][current_state.col] = time;
 		
 		
 		//MOSTRAR CASILLAS VISITADAS POR PANTALLA
@@ -224,6 +249,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 			}
 			cout << endl;
 		}
+        
 	}
 	
 	
@@ -233,7 +259,10 @@ Action ComportamientoJugador::think(Sensores sensores)
 		case 0 : 
 			//Todo el sistema sensorial funciona correctamente y el agente es el único agente que está en la simulación.
 			orientado = true;
-            accion = nextMove(sensores);
+            if(inicio){
+                accion = nextMove(sensores);
+            }
+            inicio = true;
 		break;
 		case 1 : 
 			/*
@@ -243,27 +272,30 @@ Action ComportamientoJugador::think(Sensores sensores)
 			situarse en el mapa se utilizan las casillas de Posicionamiento. En 
 			esas casillas, los sensores darán los valores correctos.
 			*/
-			if(!orientado){
-				if(sensores.terreno[0] == 'G'){
-					orientado = true;
-				}
-				else{
-					if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
-						accion = actWALK;
-					}
-					else if( !girar_derecha ){
-						accion = actTURN_L;
-						girar_derecha = (rand()%5 == 0);
-					}
-					else{
-						accion = actTURN_SR;
-						girar_derecha = (rand()%2 == 0);
-					}
-				}
-			}
-			else{
-				accion = nextMove(sensores);
-			}				
+            if(inicio){
+                if(!orientado){
+                    if(sensores.terreno[0] == 'G'){
+                        orientado = true;
+                    }
+                    else{
+                        if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
+                            accion = actWALK;
+                        }
+                        else if( !girar_derecha ){
+                            accion = actTURN_L;
+                            girar_derecha = (rand()%5 == 0);
+                        }
+                        else{
+                            accion = actTURN_SR;
+                            girar_derecha = (rand()%2 == 0);
+                        }
+                    }
+                }
+                else{
+                    accion = nextMove(sensores);
+                }	
+            }
+            inicio = true;		
 		break;
 		case 2 : 
 			/*
@@ -271,43 +303,46 @@ Action ComportamientoJugador::think(Sensores sensores)
 			pueden aparecer otros agentes como los aldeanos y los lobos. En este nivel se
 			deben gestionar las colisiones y los reinicios con estos agentes
 			*/
-			if(!orientado){
-				if(sensores.terreno[0] == 'G'){
-					orientado = true;
-				}
-				else{
-					if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
-						accion = actWALK;
-					}
-					else if( !girar_derecha ){
-						accion = actTURN_L;
-						girar_derecha = (rand()%5 == 0);
-					}
-					else{
-						accion = actTURN_SR;
-						girar_derecha = (rand()%2 == 0);
-					}
-				}
-			}
-			else{
-				if(sensores.reset){
+            if(inicio){
+                if(sensores.reset){
                     bien_situado = false;
-					orientado = false;
-				}
-				else if(sensores.agentes[2] != '_'){
-					if(!girar_derecha){
-						accion = actTURN_L;
-						girar_derecha = (rand()%5 == 0);
-					}
-					else{
-						accion = actTURN_SR;
-						girar_derecha = (rand()%2 == 0);
-					}
-				}
-				else{
-					accion = nextMove(sensores);
-				}
-			}	
+                    orientado = false;
+                    tengo_bikini = false;
+                    tengo_zapatillas = false;
+                }
+                if(!orientado){
+                    if(sensores.terreno[0] == 'G'){
+                        orientado = true;
+                    }
+                    else{
+                        if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
+                            accion = actWALK;
+                        }
+                        else if( !girar_derecha ){
+                            accion = actTURN_L;
+                            girar_derecha = (rand()%5 == 0);
+                        }
+                        else{
+                            accion = actTURN_SR;
+                            girar_derecha = (rand()%2 == 0);
+                        }
+                    }
+                }
+                else if(sensores.agentes[2] != '_'){
+                        if(!girar_derecha){
+                            accion = actTURN_L;
+                            girar_derecha = (rand()%5 == 0);
+                        }
+                        else{
+                            accion = actTURN_SR;
+                            girar_derecha = (rand()%2 == 0);
+                        }
+                }
+                else{
+                    accion = nextMove(sensores);
+                }
+            }
+            inicio = true;
 		break;
 		case 3 : 
 			/*
@@ -316,6 +351,46 @@ Action ComportamientoJugador::think(Sensores sensores)
 			sur o este u oeste). Además, el sensor de visión del terreno no da información
 			sobre lo que aparece en las casillas 6, 11, 12 y 13.
 			*/
+            if(inicio){
+                if(sensores.reset){
+                    bien_situado = false;
+                    orientado = false;
+                    tengo_bikini = false;
+                    tengo_zapatillas = false;
+                }
+                if(!orientado){
+                    if(sensores.terreno[0] == 'G'){
+                        orientado = true;
+                    }
+                    else{
+                        if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
+                            accion = actWALK;
+                        }
+                        else if( !girar_derecha ){
+                            accion = actTURN_L;
+                            girar_derecha = (rand()%5 == 0);
+                        }
+                        else{
+                            accion = actTURN_SR;
+                            girar_derecha = (rand()%2 == 0);
+                        }
+                    }
+                }
+                else if(sensores.agentes[2] != '_'){
+                        if(!girar_derecha){
+                            accion = actTURN_L;
+                            girar_derecha = (rand()%5 == 0);
+                        }
+                        else{
+                            accion = actTURN_SR;
+                            girar_derecha = (rand()%2 == 0);
+                        }
+                }
+                else{
+                    accion = nextMove(sensores);
+                }
+            }
+		    inicio = true;
 		break;
 	}
 
@@ -360,28 +435,28 @@ Action ComportamientoJugador::nextMove(Sensores sensores) {
     if (girando_I) {
         accion = actTURN_L;
         girando_I = false;
-        if (inicio) {
+        if (inicio and !sensores.reset) {
             moverse = true;
         }
     } 
     else if (girando_D) {
         accion = actTURN_SR;
         girando_D = false;
-        if (inicio) {
+        if (inicio and !sensores.reset) {
             moverse = true;
         }
     } 
     else if (girar_MAS_I) {
         accion = actTURN_L;
         girar_MAS_I = false;
-        if (inicio) {
+        if (inicio and !sensores.reset) {
             moverse = true;
         }
     } 
     else if (girar_MAS_D) {
         accion = actTURN_SR;
         girar_MAS_D = false;
-        if (inicio) {
+        if (inicio and !sensores.reset) {
             moverse = true;
         }
     } 
@@ -395,7 +470,6 @@ Action ComportamientoJugador::nextMove(Sensores sensores) {
     } 
     else {
         min = 3000;
-        inicio = true;
         cout << "EMPEZANDO" << endl;
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
