@@ -8,9 +8,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 	Action accion = actIDLE;
 	int a;
 
-// +-+-+-+-+-+-+-+-+
-// |T|U|T|O|R|I|A|L|
-// +-+-+-+-+-+-+-+-+
+    //DEFINICION DE MOVIMIENTOS
 	switch(last_action){
 		case actWALK: 
 			switch(current_state.brujula){
@@ -52,17 +50,24 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 	}
 
-	if(sensores.posF!= -1 and !bien_situado and orientado){
+    //COMPROBAR SI EL AGENTE SE HA CHOCADO CON UN LOBO
+    if(sensores.reset){
+        bien_situado = false;
+        orientado = false;
+        tengo_bikini = false;
+        tengo_zapatillas = false;
+    }
+
+    //COMPROBAR SI SE PUEDE EMPEZAR A UTILIZAR LA VISION
+	if(!bien_situado and orientado){
         cout << "SITUADO" << endl;
-		current_state.fil = sensores.posF;
+        current_state.fil = sensores.posF;
 		current_state.col = sensores.posC;
-		current_state.brujula = sensores.sentido;
+        current_state.brujula = sensores.sentido;		
 		bien_situado = true;
 	}
 	
-//+-+-+-+-+-+-+
-//|V|I|S|I|O|N|
-//+-+-+-+-+-+-+
+    //VISION DEL AGENTE
 	if(bien_situado){
 		switch(current_state.brujula){
 			case norte: 
@@ -226,7 +231,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 	n_casillas = mapaResultado.size();
 	cout << "CASILLAS: " << n_casillas << endl;
 
-	if(orientado or sensores.nivel == 0){
+	if(orientado){
 		for(int i = 0 ; i < n_casillas ; i++){
 			for(int j = 0;  j < n_casillas ; j++){
 				if(mapaResultado[i][j] == 'P' or mapaResultado[i][j] == 'M'){
@@ -254,7 +259,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 	
 	
 	//Decir la nueva accion
-	
 	switch(sensores.nivel){
 		case 0 : 
 			//Todo el sistema sensorial funciona correctamente y el agente es el único agente que está en la simulación.
@@ -278,18 +282,87 @@ Action ComportamientoJugador::think(Sensores sensores)
                         orientado = true;
                     }
                     else{
-                        if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
-                            accion = actWALK;
-                        }
-                        else if( !girar_derecha ){
+                            if(girando_D){
+                                accion = actTURN_SR;
+                                girar_MAS_D = true;
+                                girando_D = false;
+                            }
+                            else if(girar_MAS_D){
+                                accion = actTURN_SR;
+                                girar_MAS_D = false;
+                            }
+                            //COMPRUEBA SI HAY ALGUN OBSTACULO
+                            //SI HAY UN OBSTACULO, LO RODEA
+
+                            //IDEA: INTENTAR QUE UNA VEZ QUE ESQUIVE EL OBSTACULO, NO VUELVA A PASAR POR AHI (GIRANDO O ALGO)
+                            else if(hay_obstaculo){
+                                if(sensores.terreno[2] == 'M'){
+                                    accion = actTURN_L;
+                                    hay_obstaculo = true;
+                                }
+                                else{
+                                    accion = actWALK;
+                                    girando_D = true;
+                                    hay_obstaculo = false;
+                                }
+                            }
+                            else if(sensores.terreno[2] == 'M' && veces_en_precipicio == 0){
+                                accion = actTURN_L;
+                                hay_obstaculo = true;
+                            }
+                            /*
+                            // SI EL AGENTE NO TIENE NADA DELANTE AVANZA
+                            else if ( sensores.terreno[2] != 'P' and sensores.terreno[2] != 'M'  and sensores.agentes[2] == '_' ){
+                                accion = actWALK;
+                            }
+                            */
+                        
+                        //SI SE ENCUENTRA CON UN OBSTACULO QUE NO SEA UN MURO, RECORRE LA MATRIZ
+                        else if( girando == 2 and veces_en_precipicio%2 == 0 ){
+                            cout << "SE ME METE EN ESTE 1"<< endl;
                             accion = actTURN_L;
-                            girar_derecha = (rand()%5 == 0);
+                            girando = 0;
+                            veces_en_precipicio++;
+                        }
+                        else if(girando == 1 and (sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 0){
+                            cout << "SE ME METE EN ESTE 2"<< endl;
+                            accion = actTURN_L;
+                            girando = 0;
+                        }
+                        else if(girando == 1 and (sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 1){
+                            cout << "SE ME METE EN ESTE 3"<< endl;
+                            accion = actTURN_SR;
+                            girando_D = true;
+                            girando = 0;
+                        }
+                        else if(girando == 1){
+                            cout << "SE ME METE EN ESTE 4"<< endl;
+                            accion = actWALK;
+                            girando = 2;
+                        }
+                        else if((sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 0){
+                            cout << "SE ME METE EN ESTE 5"<< endl;
+                            girando = 1;
+                            accion = actTURN_L;
+                        }
+                        else if(girando == 2 and veces_en_precipicio%2 == 1){
+                            cout << "SE ME METE EN ESTE 6"<< endl;
+                            accion = actTURN_SR;
+                            girando_D = true;
+                            girando = 0;
+                            veces_en_precipicio++;
+                        }
+                        else if((sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 1){
+                            cout << "SE ME METE EN ESTE 7"<< endl;
+                            girando = 1;
+                            accion = actTURN_SR;
+                            girando_D = true;
                         }
                         else{
-                            accion = actTURN_SR;
-                            girar_derecha = (rand()%2 == 0);
+                            cout << "SE ME METE EN ESTE 8"<< endl;
+                            accion = actWALK;
                         }
-                    }
+                    }   
                 }
                 else{
                     accion = nextMove(sensores);
@@ -304,12 +377,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 			deben gestionar las colisiones y los reinicios con estos agentes
 			*/
             if(inicio){
-                if(sensores.reset){
-                    bien_situado = false;
-                    orientado = false;
-                    tengo_bikini = false;
-                    tengo_zapatillas = false;
-                }
                 if(!orientado){
                     if(sensores.terreno[0] == 'G'){
                         orientado = true;
@@ -470,7 +537,6 @@ Action ComportamientoJugador::nextMove(Sensores sensores) {
     } 
     else {
         min = 3000;
-        cout << "EMPEZANDO" << endl;
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 if (visitas[current_state.fil + i][current_state.col + j] < min and !(i == 0 and j == 0)) {
