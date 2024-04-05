@@ -319,47 +319,39 @@ Action ComportamientoJugador::think(Sensores sensores)
                         
                         //SI SE ENCUENTRA CON UN OBSTACULO QUE NO SEA UN MURO, RECORRE LA MATRIZ
                         else if( girando == 2 and veces_en_precipicio%2 == 0 ){
-                            cout << "SE ME METE EN ESTE 1"<< endl;
                             accion = actTURN_L;
                             girando = 0;
                             veces_en_precipicio++;
                         }
                         else if(girando == 1 and (sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 0){
-                            cout << "SE ME METE EN ESTE 2"<< endl;
                             accion = actTURN_L;
                             girando = 0;
                         }
                         else if(girando == 1 and (sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 1){
-                            cout << "SE ME METE EN ESTE 3"<< endl;
                             accion = actTURN_SR;
-                            girando_D = true;
+                            girar_MAS_D = true;
                             girando = 0;
                         }
                         else if(girando == 1){
-                            cout << "SE ME METE EN ESTE 4"<< endl;
                             accion = actWALK;
                             girando = 2;
                         }
                         else if((sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 0){
-                            cout << "SE ME METE EN ESTE 5"<< endl;
                             girando = 1;
                             accion = actTURN_L;
                         }
                         else if(girando == 2 and veces_en_precipicio%2 == 1){
-                            cout << "SE ME METE EN ESTE 6"<< endl;
                             accion = actTURN_SR;
-                            girando_D = true;
+                            girar_MAS_D = true;
                             girando = 0;
                             veces_en_precipicio++;
                         }
                         else if((sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M') and veces_en_precipicio %2 == 1){
-                            cout << "SE ME METE EN ESTE 7"<< endl;
                             girando = 1;
                             accion = actTURN_SR;
-                            girando_D = true;
+                            girar_MAS_D = true;
                         }
                         else{
-                            cout << "SE ME METE EN ESTE 8"<< endl;
                             accion = actWALK;
                         }
                     }   
