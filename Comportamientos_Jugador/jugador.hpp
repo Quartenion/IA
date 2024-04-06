@@ -36,6 +36,8 @@ class ComportamientoJugador : public Comportamiento{
       min_local = 0;
       min_remoto = 0;
       moverse = false;
+      moverse_1 = false;
+      moverse_2 = false;
       n_casillas = 1;
       time = 0;
       orientado = false;
@@ -45,6 +47,7 @@ class ComportamientoJugador : public Comportamiento{
       girando = 0;
       remoto = true;
       contador = 1;
+      encontrado = false;
       
 
       //DIAMETRO DE SENSACION
@@ -79,6 +82,8 @@ class ComportamientoJugador : public Comportamiento{
   int min_local;
   int min_remoto;
   bool moverse;
+  bool moverse_1;
+  bool moverse_2;
   int n_casillas;
   int time;
   bool orientado;
@@ -90,5 +95,6 @@ class ComportamientoJugador : public Comportamiento{
   bool preevision;
   int diametro[100][100];
   int contador;
+  bool encontrado;
 };
 #endif
