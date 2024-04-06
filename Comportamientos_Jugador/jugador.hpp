@@ -44,7 +44,7 @@ class ComportamientoJugador : public Comportamiento{
       veces_en_precipicio = 0;
       girando = 0;
       remoto = true;
-      contador = 0;
+      contador = 1;
       
 
       //DIAMETRO DE SENSACION
