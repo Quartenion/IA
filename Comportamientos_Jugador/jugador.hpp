@@ -39,6 +39,7 @@ class ComportamientoJugador : public Comportamiento{
       n_casillas = 1;
       time = 0;
       orientado = false;
+      esperar = false;
       hay_obstaculo = false;
       veces_en_precipicio = 0;
       girando = 0;
@@ -81,6 +82,7 @@ class ComportamientoJugador : public Comportamiento{
   int n_casillas;
   int time;
   bool orientado;
+  bool esperar;
   bool hay_obstaculo;
   int veces_en_precipicio;
   int girando;

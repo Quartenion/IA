@@ -58,12 +58,20 @@ Action ComportamientoJugador::think(Sensores sensores)
         tengo_zapatillas = false;
     }
 
+    //COMPROBAR SI EL AGENTE ESTA EN UNA CASILLA DE POSICIONAMIENTO
+    if(sensores.terreno[0] == 'G'){
+        orientado = true;
+    }
+
     //COMPROBAR SI SE PUEDE EMPEZAR A UTILIZAR LA VISION
 	if(!bien_situado and orientado){
         cout << "SITUADO" << endl;
         current_state.fil = sensores.posF;
+        cout << "FILA: " << current_state.fil << endl;
 		current_state.col = sensores.posC;
-        current_state.brujula = sensores.sentido;		
+        cout << "COLUMNA: " << current_state.col << endl;
+        current_state.brujula = sensores.sentido;	
+        cout << "BRUJULA: " << current_state.brujula << endl;	
 		bien_situado = true;
 	}
 	
@@ -298,9 +306,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 			*/
             if(inicio){
                 if(!orientado){
-                    if(sensores.terreno[0] == 'G'){
-                        orientado = true;
-                    }
                     accion = blindMove(sensores);
                 }
                 else{
@@ -317,32 +322,29 @@ Action ComportamientoJugador::think(Sensores sensores)
 			*/
             if(inicio){
                 if(!orientado){
-                    if(sensores.terreno[0] == 'G'){
-                        orientado = true;
-                    }
-                    else{
-                        if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
-                            accion = actWALK;
-                        }
-                        else if( !girar_derecha ){
-                            accion = actTURN_L;
-                            girar_derecha = (rand()%5 == 0);
-                        }
-                        else{
-                            accion = actTURN_SR;
-                            girar_derecha = (rand()%2 == 0);
-                        }
-                    }
-                }
-                else if(sensores.agentes[2] != '_'){
+                    if(sensores.agentes[2] != '_'){
                         if(!girar_derecha){
                             accion = actTURN_L;
                             girar_derecha = (rand()%5 == 0);
                         }
                         else{
                             accion = actTURN_SR;
-                            girar_derecha = (rand()%2 == 0);
+                            girar_derecha = (rand()%5 == 0);
                         }
+                    }
+                    else{
+                        accion = blindMove(sensores);
+                    }
+                }
+                else if(sensores.agentes[2] != '_'){
+                    if(!girar_derecha){
+                        accion = actTURN_L;
+                        girar_derecha = (rand()%5 == 0);
+                    }
+                    else{
+                        accion = actTURN_SR;
+                        girar_derecha = (rand()%5 == 0);
+                    }
                 }
                 else{
                     accion = nextMove(sensores);
@@ -358,45 +360,36 @@ Action ComportamientoJugador::think(Sensores sensores)
 			sobre lo que aparece en las casillas 6, 11, 12 y 13.
 			*/
             if(inicio){
-                if(sensores.reset){
-                    bien_situado = false;
-                    orientado = false;
-                    tengo_bikini = false;
-                    tengo_zapatillas = false;
-                }
                 if(!orientado){
-                    if(sensores.terreno[0] == 'G'){
-                        orientado = true;
-                    }
-                    else{
-                        if (( sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or sensores.terreno[2] == 'A' or sensores.terreno[2] == 'B') and sensores.agentes[2] == '_' ){
-                            accion = actWALK;
-                        }
-                        else if( !girar_derecha ){
-                            accion = actTURN_L;
-                            girar_derecha = (rand()%5 == 0);
-                        }
-                        else{
-                            accion = actTURN_SR;
-                            girar_derecha = (rand()%2 == 0);
-                        }
-                    }
-                }
-                else if(sensores.agentes[2] != '_'){
+                    if(sensores.agentes[2] != '_'){
                         if(!girar_derecha){
                             accion = actTURN_L;
                             girar_derecha = (rand()%5 == 0);
                         }
                         else{
                             accion = actTURN_SR;
-                            girar_derecha = (rand()%2 == 0);
+                            girar_derecha = (rand()%5 == 0);
                         }
+                    }
+                    else{
+                        accion = blindMove(sensores);
+                    }
+                }
+                else if(sensores.agentes[2] != '_'){
+                    if(!girar_derecha){
+                        accion = actTURN_L;
+                        girar_derecha = (rand()%5 == 0);
+                    }
+                    else{
+                        accion = actTURN_SR;
+                        girar_derecha = (rand()%5 == 0);
+                    }
                 }
                 else{
                     accion = nextMove(sensores);
                 }
             }
-		    inicio = true;
+            inicio = true;
 		break;
 	}
 
