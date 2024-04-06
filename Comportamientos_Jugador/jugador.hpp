@@ -33,7 +33,8 @@ class ComportamientoJugador : public Comportamiento{
           visitas[i][j] = 0;
         }
       }
-      min = 0;
+      min_local = 0;
+      min_remoto = 0;
       moverse = false;
       n_casillas = 1;
       time = 0;
@@ -41,6 +42,16 @@ class ComportamientoJugador : public Comportamiento{
       hay_obstaculo = false;
       veces_en_precipicio = 0;
       girando = 0;
+      remoto = true;
+      preevision = false;
+      
+
+      //DIAMETRO DE SENSACION
+      for(int i = 0; i < 100; i++){
+        for(int j = 0; j < 100; j++){
+          diametro[i][j] = 0;
+        }
+      }
 
     }
 
@@ -51,6 +62,7 @@ class ComportamientoJugador : public Comportamiento{
     int interact(Action accion, int valor);
 
     Action nextMove(Sensores sensores);
+    Action blindMove(Sensores sensores);
 
   private:
   // Declarar aquí las variables de estado
@@ -63,7 +75,8 @@ class ComportamientoJugador : public Comportamiento{
   bool girando_I, girando_D, girar_MAS_I, girar_MAS_D;
   bool inicio;
   int visitas[100][100];
-  int min;
+  int min_local;
+  int min_remoto;
   bool moverse;
   int n_casillas;
   int time;
@@ -71,5 +84,8 @@ class ComportamientoJugador : public Comportamiento{
   bool hay_obstaculo;
   int veces_en_precipicio;
   int girando;
+  bool remoto;
+  bool preevision;
+  int diametro[100][100];
 };
 #endif
