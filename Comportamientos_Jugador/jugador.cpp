@@ -65,13 +65,13 @@ Action ComportamientoJugador::think(Sensores sensores)
 
     //COMPROBAR SI SE PUEDE EMPEZAR A UTILIZAR LA VISION
 	if(!bien_situado and orientado){
-        cout << "SITUADO" << endl;
+        //cout << "SITUADO" << endl;
         current_state.fil = sensores.posF;
-        cout << "FILA: " << current_state.fil << endl;
+        //cout << "FILA: " << current_state.fil << endl;
 		current_state.col = sensores.posC;
-        cout << "COLUMNA: " << current_state.col << endl;
+        //cout << "COLUMNA: " << current_state.col << endl;
         current_state.brujula = sensores.sentido;	
-        cout << "BRUJULA: " << current_state.brujula << endl;	
+        //cout << "BRUJULA: " << current_state.brujula << endl;	
 		bien_situado = true;
 	}
 	
@@ -237,7 +237,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 	//ACTUALIZAR CASILLAS VISITADAS
 	n_casillas = mapaResultado.size();
-	cout << "CASILLAS: " << n_casillas << endl;
+	//cout << "CASILLAS: " << n_casillas << endl;
 
 	if(orientado){
 		for(int i = 0 ; i < n_casillas ; i++){
@@ -248,6 +248,21 @@ Action ComportamientoJugador::think(Sensores sensores)
                 if(i < 3 or j < 3 or i > n_casillas-3 or j > n_casillas-3){
                     visitas[i][j] = 3000;
                 }
+                if(mapaResultado[i][j] == 'K' and !tengo_bikini){
+                    visitas[i][j] = 0;
+                }
+                if(mapaResultado[i][j] == 'D' and !tengo_zapatillas){
+                    visitas[i][j] = 0;
+                }
+                if(mapaResultado[i][j] == 'X' and sensores.bateria < 2000){
+                    visitas[i][j] = 0;
+                }
+                if(mapaResultado[i][j] == 'A' and !tengo_bikini){
+                    visitas[i][j] = 4;
+                }
+                if(mapaResultado[i][j] == 'B' and !tengo_zapatillas){
+                    visitas[i][j] = 4;
+                }
 			}
 		}
 		visitas[current_state.fil][current_state.col]++;
@@ -255,12 +270,14 @@ Action ComportamientoJugador::think(Sensores sensores)
 		
 		//MOSTRAR CASILLAS VISITADAS POR PANTALLA
         
+        /*
 		for(int i = 0; i < n_casillas; i++){
 			for(int j = 0; j < n_casillas; j++){
 				cout << visitas[i][j] << " ";
 			}
 			cout << endl;
 		}
+        */
 	}
 
     //ACTUALIZAR MATRIZ DE SENSION
@@ -286,7 +303,7 @@ Action ComportamientoJugador::think(Sensores sensores)
  
 	
 	
-	//Decir la nueva accion
+	//DECIDIR LA NUEVA ACCION
 	switch(sensores.nivel){
 		case 0 : 
 			//Todo el sistema sensorial funciona correctamente y el agente es el único agente que está en la simulación.
@@ -306,7 +323,13 @@ Action ComportamientoJugador::think(Sensores sensores)
 			*/
             if(inicio){
                 if(!orientado){
-                    accion = blindMove(sensores);
+                    if(contador % 100 == 0){
+                        accion = actTURN_L;
+                    }
+                    else{
+                        accion = blindMove(sensores);
+                    }
+                    contador++;
                 }
                 else{
                     accion = nextMove(sensores);
@@ -333,7 +356,13 @@ Action ComportamientoJugador::think(Sensores sensores)
                         }
                     }
                     else{
-                        accion = blindMove(sensores);
+                        if(contador % 100 == 0){
+                            accion = actTURN_L;
+                        }
+                        else{
+                            accion = blindMove(sensores);
+                        }
+                        contador++;
                     }
                 }
                 else if(sensores.agentes[2] != '_'){
@@ -372,7 +401,13 @@ Action ComportamientoJugador::think(Sensores sensores)
                         }
                     }
                     else{
-                        accion = blindMove(sensores);
+                        if(contador % 100 == 0){
+                            accion = actTURN_L;
+                        }
+                        else{
+                            accion = blindMove(sensores);
+                        }
+                        contador++;
                     }
                 }
                 else if(sensores.agentes[2] != '_'){
@@ -397,6 +432,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 	last_action = accion;
 
 	// Mostrar el valor de los sensores
+    /*
 	std::cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC;
 	switch (sensores.sentido)
 	{
@@ -420,6 +456,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 	std::cout << "\nColision: " << sensores.colision;
 	std::cout << "  Reset: " << sensores.reset;
 	std::cout << "  Vida: " << sensores.vida << endl<< endl;
+    */
 
 	return accion;
 }
@@ -464,7 +501,12 @@ Action ComportamientoJugador::nextMove(Sensores sensores) {
         visitas[current_state.fil][current_state.col] = 0;
     } 
     else if (moverse) {
-        accion = actWALK;
+        if(sensores.terreno[2] == 'M' or sensores.terreno[2] == 'P'){
+            accion = actIDLE;
+        }
+        else{
+            accion = actWALK;
+        }
         moverse = false;
     } 
     else {
@@ -890,7 +932,7 @@ Action ComportamientoJugador::nextMove(Sensores sensores) {
             }
         }
         else{
-            cout << "EL MINIMO LOCAL ES: " << min_local << endl;
+            //cout << "EL MINIMO LOCAL ES: " << min_local << endl;
             switch (current_state.brujula) {
                 case norte:
                     remoto = true;

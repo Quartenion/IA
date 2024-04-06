@@ -30,7 +30,7 @@ class ComportamientoJugador : public Comportamiento{
       //MATRIZ DE CASILLAS VISITADAS
       for(int i = 0; i < 100; i++){
         for(int j = 0; j < 100; j++){
-          visitas[i][j] = 0;
+          visitas[i][j] = 1;
         }
       }
       min_local = 0;
@@ -44,7 +44,7 @@ class ComportamientoJugador : public Comportamiento{
       veces_en_precipicio = 0;
       girando = 0;
       remoto = true;
-      preevision = false;
+      contador = 0;
       
 
       //DIAMETRO DE SENSACION
@@ -89,5 +89,6 @@ class ComportamientoJugador : public Comportamiento{
   bool remoto;
   bool preevision;
   int diametro[100][100];
+  int contador;
 };
 #endif
