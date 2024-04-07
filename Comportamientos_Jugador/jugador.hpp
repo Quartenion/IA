@@ -48,6 +48,21 @@ class ComportamientoJugador : public Comportamiento{
       remoto = true;
       contador = 1;
       encontrado = false;
+
+      //DIBUJAR BORDES
+      for(int i = 0; i < 3 ;i++){
+        for(int j = 0; j < mapaResultado.size() ;j++){
+          mapaResultado[i][j] = 'P';
+          mapaResultado[mapaResultado.size()-i-1][j] = 'P';
+        }
+      }
+
+      for(int i = 0; i < 3 ;i++){
+        for(int j = 0; j < mapaResultado.size() ;j++){
+          mapaResultado[j][i] = 'P';
+          mapaResultado[j][mapaResultado.size()-i-1] = 'P';
+        }
+      }
       
 
       //DIAMETRO DE SENSACION

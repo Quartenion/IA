@@ -74,7 +74,6 @@ Action ComportamientoJugador::think(Sensores sensores)
         //cout << "BRUJULA: " << current_state.brujula << endl;	
 		bien_situado = true;
 	}
-	
     //VISION DEL AGENTE
 	if(bien_situado){
 		switch(current_state.brujula){
