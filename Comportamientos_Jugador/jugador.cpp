@@ -121,6 +121,30 @@ void ComportamientoJugador::VisualizaPlan(const stateN0 &st, const list<Action> 
 	}
 }
 
+struct nodeN0{
+	stateN0 st;
+	list<Action> secuencia;
+
+	bool operator==(const nodeN0 &n) const{
+		return (st == n.st);
+	}
+
+	bool operator<(const nodeN0 &b) const{
+		if(st.jugador.f < b.st.jugador.f){
+			return true;
+		}
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c){
+			return true;
+		}
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+};
+
 //Devuelve el estado que se genera si el agente puede avanzar.
 //Si no puede avanzar, devuelve como salida el mismo estado de entrada 
 stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char>> &mapa){
@@ -166,6 +190,52 @@ bool Find(const stateN0 &item, const list<stateN0> &lista){
 	}
 
 	return (!(it == lista.end()));
+}
+
+/* Sobrecarga de la funcion Find para buscar en lista de nodeN0 */
+bool Find(const stateN0 &item, const list<nodeN0> &lista){
+	auto it = lista.begin();
+	while(it != lista.end() and !(it->st == item)){
+		it++;
+	}
+
+	return (!(it == lista.end()));
+
+}
+
+void PintaPlan(const list<Action> &plan){
+	auto it = plan.begin();
+	while (it != plan.end()){
+		if(*it == actWALK){
+			cout << "W";
+		}
+		else if(*it == actRUN){
+			cout << "R";
+		}
+		else if(*it == actTURN_SR){
+			cout << "r";
+		}
+		else if(*it == actTURN_L){
+			cout << "L";
+		}
+		else if(*it == act_CLB_WALK){
+			cout << "cW";
+		}
+		else if(*it == act_CLB_TURN_SR){
+			cout << "cr";
+		}
+		else if(*it == act_CLB_STOP){
+			cout << "cS";
+		}
+		else if(*it == actIDLE){
+			cout << "I ";
+		}
+		else{
+			cout << "-_ ";
+		}
+		it++;
+	}
+	cout << " (" << plan.size() << " acciones)\n";
 }
 
 /* primera aproximacion a la implementacion de la busqueda en anchura */
@@ -222,6 +292,78 @@ bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vec
 	}
 }
 
+/* Version segunda de la busqueda en anchura: ahora si devuelve un plan */
+list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa){
+	nodeN0 current_node;
+	list<nodeN0> frontier;
+	list<nodeN0> explored;
+	list<Action> plan;
+	current_node.st = inicio;
+	bool SolutionFound = (current_node.st.jugador.f == final.f and 
+						  current_node.st.jugador.c == final.c);
+	frontier.push_back(current_node);
+
+	while(!frontier.empty() and !SolutionFound){
+		frontier.pop_front();
+		explored.push_back(current_node);
+
+		// Generar hijo actWALK
+		nodeN0 child_walk = current_node;
+		child_walk.st = apply(actWALK, current_node.st, mapa);
+		child_walk.secuencia.push_back(actWALK);
+		if(child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+			current_node = child_walk;
+			SolutionFound = true;
+		}
+		else if(!Find(child_walk.st, frontier) and !Find(child_walk.st, explored)){
+			frontier.push_back(child_walk);
+		}
+
+		if(!SolutionFound){
+			// Generar hijo actRUN
+			nodeN0 child_run = current_node;
+			child_run.st = apply(actRUN, current_node.st, mapa);
+			child_run.secuencia.push_back(actRUN);
+			if(child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+				current_node = child_run;
+				SolutionFound = true;
+			}
+			else if(!Find(child_run.st, frontier) and !Find(child_run.st, explored)){
+				frontier.push_back(child_run);
+			}
+		}
+
+		if(!SolutionFound){
+			// Generar hijo actTURN_L
+			nodeN0 child_turnl = current_node;
+			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
+			child_turnl.secuencia.push_back(actTURN_L);
+			if(!Find(child_turnl.st, frontier) and !Find(child_turnl.st, explored)){
+				frontier.push_back(child_turnl);
+			}
+			// Generar hijo actTURN_SR
+			nodeN0 child_turnsr = current_node;
+			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+			if(!Find(child_turnsr.st, frontier) and !Find(child_turnsr.st, explored)){
+				frontier.push_back(child_turnsr);
+			}
+		}
+
+		if(!SolutionFound and !frontier.empty()){
+			current_node = frontier.front();
+		}
+	}
+	if(SolutionFound){
+		plan = current_node.secuencia;
+		cout << "Encontrado un plan: ";
+		PintaPlan(current_node.secuencia);
+	}
+
+	return plan;
+}
+
+
+
 // Este es el método principal que se piden en la practica.
 // Tiene como entrada la información de los sensores y devuelve la acción a realizar.
 // Para ver los distintos sensores mirar fichero "comportamiento.hpp"
@@ -240,8 +382,9 @@ Action ComportamientoJugador::think(Sensores sensores)
 		goal.f = sensores.destinoF;
 		goal.c = sensores.destinoC;
 
-		hayPlan = AnchuraSoloJugador(c_state, goal, mapaResultado);
-		if(hayPlan) cout << "Se encotro un plan\n";
+		plan = AnchuraSoloJugador_V2(c_state, goal, mapaResultado);
+		VisualizaPlan(c_state, plan);
+		hayPlan = true;
 	}
 	if(hayPlan and plan.size() > 0){
 		accion = plan.front();
