@@ -5,6 +5,22 @@
 
 #include <list>
 
+struct stateN0{
+  ubicacion jugador;
+  ubicacion colaborador;
+  Action ultimaOrdenColaborador;
+
+  bool operator==(const stateN0 &x) const{
+    if(jugador == x.jugador and 
+       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+};
+
 
 class ComportamientoJugador : public Comportamiento {
   public:
@@ -13,6 +29,7 @@ class ComportamientoJugador : public Comportamiento {
     }
     ComportamientoJugador(std::vector< std::vector< unsigned char> > mapaR) : Comportamiento(mapaR) {
       // Inicializar Variables de Estado
+      hayPlan = false;
     }
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
     ~ComportamientoJugador(){}
@@ -20,14 +37,15 @@ class ComportamientoJugador : public Comportamiento {
     Action think(Sensores sensores);
     int interact(Action accion, int valor);
 
+    void VisualizaPlan(const stateN0 &st, const list<Action> &plan);
+
 
   private:
     // Declarar Variables de Estado
-
-
-
-
-
+    list<Action> plan;
+    bool hayPlan;
+    stateN0 c_state;
+    ubicacion goal;
 };
 
 #endif
