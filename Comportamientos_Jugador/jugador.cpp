@@ -62,9 +62,8 @@ ubicacion NextCasilla(const ubicacion &pos){
 
 	return next;
 }
-/**Devuelve el estado que se genera si el agente puede avanzar
- * Si no puede avanzar, devuelve como salida el mismo estado de entrada
-*/
+// Devuelve el estado que se genera si el agente puede avanzar
+// Si no puede avanzar, devuelve como salida el mismo estado de entrada
 stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char>> mapa){
 	stateN0 st_result = st;
 	ubicacion sig_ubicacion, sig_ubicacion2;
@@ -101,7 +100,7 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 	return st_result;	
 }
 
-/*Encuentra si el elemento item está en la lista*/
+// Encuentra si el elemento item está en la lista
 bool Find (const stateN0 &item, const list <stateN0> &lista){
 	auto it = lista.begin();
 	while (it!=lista.end() and !((*it) == item))
@@ -110,14 +109,14 @@ bool Find (const stateN0 &item, const list <stateN0> &lista){
 	return (!(it == lista.end()));
 }
 
-/*pone a cero todos los elementos de una matriz*/
+// Pone a cero todos los elementos de una matriz
 void AnulaMatriz(vector<vector<unsigned char>> &matriz){
 	for (int i = 0; i < matriz.size(); i++)
 		for(int j = 0; j < matriz[0].size(); j++)
 			matriz[i][j] = 0;
 }
 
-/*Permite pintar sobre el mapa del simulador el plan partiendo desde el estado st*/
+// Permite pintar sobre el mapa del simulador el plan partiendo desde el estado st
 void ComportamientoJugador::VisualizaPlan(const stateN0 &st, const list<Action> &plan){
 	AnulaMatriz(mapaConPlan);
 	stateN0 cst = st;
@@ -226,7 +225,7 @@ bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vec
 	return SolutionFound;
 }
 
-/*Definción del tipo de nodo del nivel 0*/
+// Definción del tipo de nodo del nivel 0
 struct nodeN0{
 	stateN0 st;
 	list<Action> secuencia;
@@ -290,7 +289,7 @@ void PintaPlan(const list<Action> &plan){
 	cout << " (" << plan.size() << " acciones)\n";
 }
 
-/*Version segunda de la búsqueda en anchura: ahora si devuelve un plan*/
+// Version segunda de la búsqueda en anchura: ahora si devuelve un plan
 list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa){
 	nodeN0 current_node;
 	list<nodeN0> frontier;
