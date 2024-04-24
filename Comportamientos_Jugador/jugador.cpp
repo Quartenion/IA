@@ -6,7 +6,6 @@
 #include <set>
 #include <stack>
 
-/*
 list<Action> AvanzaASaltosDeCaballo(){
 	list<Action> secuencia;
 	secuencia.push_back(actWALK);
@@ -15,59 +14,110 @@ list<Action> AvanzaASaltosDeCaballo(){
 	secuencia.push_back(actWALK);
 	return secuencia;
 }
-*/
 
-/* Devuelve si una ubicacion en el mapa es transitable para el agente */
 bool CasillaTransitable(const ubicacion &x, const vector<vector<unsigned char>> &mapa){
 	return (mapa[x.f][x.c] != 'P' and mapa[x.f][x.c] != 'M');
 }
 
-/* Devuelve la ubicacion siguiente segun el avance del agente */
 ubicacion NextCasilla(const ubicacion &pos){
 	ubicacion next = pos;
-	switch (pos.brujula){
+	switch (pos.brujula)
+	{
 		case norte:
-			next.f = pos.f - 1;
-			break;
+			next.f = pos.f-1;
+		break;
+
 		case noreste:
-			next.f = pos.f - 1;
-			next.c = pos.c + 1;
-			break;
+			next.f = pos.f-1;
+			next.c = pos.c+1;
+		break;
+
 		case este:
-			next.c = pos.c + 1;
-			break;
+			next.c = pos.c+1;
+		break;
+
 		case sureste:
-			next.f = pos.f + 1;
-			next.c = pos.c + 1;
-			break;
+			next.f = pos.f+1;
+			next.c = pos.c+1;
+		break;
+
 		case sur:
-			next.f = pos.f + 1;
-			break;
+			next.f = pos.f+1;
+		break;
+
 		case suroeste:
-			next.f = pos.f + 1;
-			next.c = pos.c - 1;
-			break;
+			next.f = pos.f+1;
+			next.c = pos.c-1;
+		break;
+
 		case oeste:
-			next.c = pos.c - 1;
-			break;
+			next.c = pos.c-1;
+		break;
+
 		case noroeste:
-			next.f = pos.f - 1;
-			next.c = pos.c - 1;
-			break;
+			next.f = pos.f-1;
+			next.c = pos.c-1;
+		break;
 	}
+
 	return next;
 }
-
-/* Pone a cero todos los elementos de una matriz */
-void AnulaMatriz(vector<vector<unsigned char>> &matriz){
-	for (int i = 0; i < matriz.size() ;i++){
-		for (int j = 0; j < matriz[0].size(); j++){
-			matriz[i][j] = 0;
+/**Devuelve el estado que se genera si el agente puede avanzar
+ * Si no puede avanzar, devuelve como salida el mismo estado de entrada
+*/
+stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char>> mapa){
+	stateN0 st_result = st;
+	ubicacion sig_ubicacion, sig_ubicacion2;
+	switch (a)
+	{
+	case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
+		sig_ubicacion = NextCasilla(st.jugador);
+		if(CasillaTransitable(sig_ubicacion, mapa) and
+		   !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+				st_result.jugador = sig_ubicacion;
+		   }
+		break;
+	
+	case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
+		sig_ubicacion = NextCasilla(st.jugador);
+		if(CasillaTransitable(sig_ubicacion, mapa) and
+		!(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+			sig_ubicacion2 = NextCasilla(sig_ubicacion);
+			if(CasillaTransitable(sig_ubicacion2, mapa) and
+				!(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
+					st_result.jugador = sig_ubicacion2;
+				}
 		}
+		break;
+	
+	case actTURN_L:
+		st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
+		break;
+	
+	case actTURN_SR:
+		st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
+		break;
 	}
+	return st_result;	
 }
 
-/* Permite pintar sobre el mapa del simulador el plan partiendo desde el estado st */
+/*Encuentra si el elemento item está en la lista*/
+bool Find (const stateN0 &item, const list <stateN0> &lista){
+	auto it = lista.begin();
+	while (it!=lista.end() and !((*it) == item))
+		it++;
+
+	return (!(it == lista.end()));
+}
+
+/*pone a cero todos los elementos de una matriz*/
+void AnulaMatriz(vector<vector<unsigned char>> &matriz){
+	for (int i = 0; i < matriz.size(); i++)
+		for(int j = 0; j < matriz[0].size(); j++)
+			matriz[i][j] = 0;
+}
+
+/*Permite pintar sobre el mapa del simulador el plan partiendo desde el estado st*/
 void ComportamientoJugador::VisualizaPlan(const stateN0 &st, const list<Action> &plan){
 	AnulaMatriz(mapaConPlan);
 	stateN0 cst = st;
@@ -75,159 +125,161 @@ void ComportamientoJugador::VisualizaPlan(const stateN0 &st, const list<Action> 
 	auto it = plan.begin();
 	while (it != plan.end()){
 		if((*it != act_CLB_WALK) and (*it != act_CLB_TURN_SR) and (*it != act_CLB_STOP)){
-			switch (cst.ultimaOrdenColaborador){
-				case act_CLB_WALK:
-					cst.colaborador = NextCasilla(cst.colaborador);
-					mapaConPlan[cst.colaborador.f][cst.colaborador.c] = 2;
-					break;
-				
-				case act_CLB_TURN_SR:
-					cst.colaborador.brujula = (Orientacion)((cst.colaborador.brujula + 1) % 8);
-					break;
+			switch (cst.ultimaOrdenColaborador)
+			{
+			case act_CLB_WALK:
+				cst.colaborador = NextCasilla(cst.colaborador);
+				mapaConPlan[cst.colaborador.f][cst.colaborador.c] = 2;
+				break;
+			
+			case act_CLB_TURN_SR:
+				cst.colaborador.brujula = (Orientacion)((cst.colaborador.brujula+1)%8);
+				break;
 			}
 		}
 
-		switch (*it){
-			case actRUN:
-				cst.jugador = NextCasilla(cst.jugador);
-				mapaConPlan[cst.jugador.f][cst.jugador.c] = 3;
-				cst.jugador = NextCasilla(cst.jugador);
-				mapaConPlan[cst.jugador.f][cst.jugador.c] = 1;
-				break;
-			case actWALK:
-				cst.jugador = NextCasilla(cst.jugador);
-				mapaConPlan[cst.jugador.f][cst.jugador.c] = 1;
-				break;
-			case actTURN_SR:
-				cst.jugador.brujula = (Orientacion)((cst.jugador.brujula + 1) % 8);
-				break;
-			case actTURN_L:
-				cst.jugador.brujula = (Orientacion)((cst.jugador.brujula + 6) % 8);
-				break;
-			case act_CLB_WALK:
-				cst.colaborador = NextCasilla(cst.colaborador);
-				cst.ultimaOrdenColaborador = act_CLB_WALK;
-				mapaConPlan[cst.jugador.f][cst.jugador.c] = 2;
-				break;
-			case act_CLB_TURN_SR:
-				cst.colaborador.brujula = (Orientacion)((cst.colaborador.brujula + 1) % 8);
-				cst.ultimaOrdenColaborador = act_CLB_TURN_SR;
-				break;
-			case act_CLB_STOP:
-				cst.ultimaOrdenColaborador = act_CLB_STOP;
-				break;
+		switch (*it)
+		{
+		case actRUN:
+			cst.jugador = NextCasilla(cst.jugador);
+			mapaConPlan[cst.jugador.f][cst.jugador.c] = 3;
+			cst.jugador = NextCasilla(cst.jugador);
+			mapaConPlan[cst.jugador.f][cst.jugador.c] = 1;
+			break;
+		case actWALK:
+			cst.jugador = NextCasilla(cst.jugador);
+			mapaConPlan[cst.jugador.f][cst.jugador.c] = 1;
+			break;
+		case actTURN_SR:
+			cst.jugador.brujula = (Orientacion)((cst.jugador.brujula+1)%8);
+			break;
+		case actTURN_L:
+			cst.jugador.brujula = (Orientacion)((cst.jugador.brujula+6)%8);
+			break;
+		case act_CLB_WALK:
+			cst.colaborador = NextCasilla(cst.colaborador);
+			cst.ultimaOrdenColaborador = act_CLB_WALK;
+			mapaConPlan[cst.jugador.f][cst.jugador.c] = 2;
+			break;
+		case act_CLB_TURN_SR:
+			cst.colaborador.brujula = (Orientacion)((cst.colaborador.brujula+1)%8);
+			cst.ultimaOrdenColaborador = act_CLB_TURN_SR;
+			break;
+		case act_CLB_STOP:
+			cst.ultimaOrdenColaborador = act_CLB_STOP;
+			break;
 		}
 		it++;
 	}
 }
 
+bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa){
+	stateN0 current_state = inicio;
+	list<stateN0> frontier;
+	list<stateN0> explored;
+	frontier.push_back(current_state);
+	bool SolutionFound=(current_state.jugador.f == final.f and 
+						current_state.jugador.c == final.c);
+	while(!frontier.empty() and !SolutionFound){
+		frontier.pop_front();
+		explored.push_back(current_state);
+		
+		//Generar hijo actWALK
+		stateN0 child_walk = apply(actWALK, current_state, mapa);
+		if(child_walk.jugador.f == final.f and child_walk.jugador.c == final.c){
+			current_state = child_walk;
+			SolutionFound = true;
+		}
+		else if (!Find(child_walk, frontier) and !Find(child_walk, explored)){
+			frontier.push_back(child_walk);
+		}
+
+		if(!SolutionFound){
+			//Generar hijo actRUN
+			stateN0 child_run = apply(actRUN, current_state, mapa);
+			if(child_run.jugador.f = final.f and child_run.jugador.c == final.c){
+				current_state = child_run;
+				SolutionFound = true;
+			}
+			else if(!Find(child_run,frontier) and !Find(child_run, explored)){
+				frontier.push_back(child_run);
+			}
+		}
+
+		if(!SolutionFound){
+			//Generar hijo actTURN_L
+			stateN0 child_turnl = apply(actTURN_L, current_state, mapa);
+			if(!Find(child_turnl, frontier) and !Find(child_turnl, explored)){
+				frontier.push_back(child_turnl);
+			}
+			//Generar hijo actTURN_SR
+			stateN0 child_turnsr = apply(actTURN_SR, current_state, mapa);
+			if (!Find(child_turnsr, frontier) and !Find(child_turnsr, explored)){
+				frontier.push_back(child_turnsr);
+			}
+		}
+
+		if(!SolutionFound and !frontier.empty()){
+			current_state = frontier.front();
+		}
+	}
+	return SolutionFound;
+}
+
+/*Definción del tipo de nodo del nivel 0*/
 struct nodeN0{
 	stateN0 st;
 	list<Action> secuencia;
 
 	bool operator==(const nodeN0 &n) const{
-		return (st == n.st);
+		return (st==n.st);
 	}
 
 	bool operator<(const nodeN0 &b) const{
-		if(st.jugador.f < b.st.jugador.f){
+		if(st.jugador.f < b.st.jugador.f)
 			return true;
-		}
-		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c){
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
 			return true;
-		}
-		else if(st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula){
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
 			return true;
-		}
-		else{
+		else
 			return false;
-		}
 	}
 };
 
-//Devuelve el estado que se genera si el agente puede avanzar.
-//Si no puede avanzar, devuelve como salida el mismo estado de entrada 
-stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char>> &mapa){
-	stateN0 st_result = st;
-	ubicacion sig_ubicacion, sig_ubicacion2;
-	switch(a){
-		case actWALK:
-			sig_ubicacion = NextCasilla(st.jugador);
-			if(CasillaTransitable(sig_ubicacion, mapa) and
-			   !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-			   		st_result.jugador = sig_ubicacion;
-			}
-			break;
-		
-		case actRUN:
-			sig_ubicacion = NextCasilla(st.jugador);
-			if(CasillaTransitable(sig_ubicacion, mapa) and
-				!(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-					sig_ubicacion2 = NextCasilla(sig_ubicacion);
-					if(CasillaTransitable(sig_ubicacion2, mapa) and
-						!(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
-							st_result.jugador = sig_ubicacion2;
-					}
-				}
-			break;
-		
-		case actTURN_L:
-			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
-			break;
-		
-		case actTURN_SR:
-			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
-			break;
-	}
-	return st_result;
-}
-
-/* Encuentra si el elemento item esta en la lista */
-bool Find(const stateN0 &item, const list<stateN0> &lista){
-	auto it = lista.begin();
-	while(it != lista.end() and !((*it) == item)){
-		++it;
-	}
-
-	return (!(it == lista.end()));
-}
-
-/* Sobrecarga de la funcion Find para buscar en lista de nodeN0 */
 bool Find(const stateN0 &item, const list<nodeN0> &lista){
 	auto it = lista.begin();
-	while(it != lista.end() and !(it->st == item)){
+	while(it != lista.end() and !(it->st == item))
 		it++;
-	}
-
+	
 	return (!(it == lista.end()));
-
 }
 
 void PintaPlan(const list<Action> &plan){
 	auto it = plan.begin();
 	while (it != plan.end()){
-		if(*it == actWALK){
-			cout << "W";
+		if (*it == actWALK){
+			cout << "W ";
 		}
-		else if(*it == actRUN){
-			cout << "R";
+		else if (*it == actRUN){
+			cout << "R ";
 		}
-		else if(*it == actTURN_SR){
-			cout << "r";
+		else if (*it == actTURN_SR){
+			cout << "r ";
 		}
-		else if(*it == actTURN_L){
-			cout << "L";
+		else if (*it == actTURN_L){
+			cout << "L ";
 		}
-		else if(*it == act_CLB_WALK){
-			cout << "cW";
+		else if (*it == act_CLB_WALK){
+			cout << "cW ";
 		}
-		else if(*it == act_CLB_TURN_SR){
-			cout << "cr";
+		else if (*it == act_CLB_TURN_SR){
+			cout << "cr ";
 		}
-		else if(*it == act_CLB_STOP){
-			cout << "cS";
+		else if (*it == act_CLB_STOP){
+			cout << "cS ";
 		}
-		else if(*it == actIDLE){
+		else if (*it == actIDLE){
 			cout << "I ";
 		}
 		else{
@@ -238,61 +290,7 @@ void PintaPlan(const list<Action> &plan){
 	cout << " (" << plan.size() << " acciones)\n";
 }
 
-/* primera aproximacion a la implementacion de la busqueda en anchura */
-bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa){
-	stateN0 current_state = inicio;
-	list<stateN0> frontier;
-	list<stateN0> explored;
-	frontier.push_back(current_state);
-	bool SolutionFound = (current_state.jugador.f == final.f and 
-						  current_state.jugador.c == final.c);
-	
-	while(!frontier.empty() and !SolutionFound){
-		frontier.pop_front();
-		explored.push_back(current_state);
-
-		// Generar hijo actWALK
-		stateN0 child_walk = apply(actWALK, current_state, mapa);
-		if(child_walk.jugador.f == final.f and child_walk.jugador.c == final.c){
-			current_state = child_walk;
-			SolutionFound = true;
-		}
-		else if(!Find(child_walk, frontier) and !Find(child_walk, explored)){
-			frontier.push_back(child_walk);
-		}
-
-		if(!SolutionFound){
-			// Generar hijo actRUN
-			stateN0 child_run = apply(actRUN, current_state, mapa);
-			if(child_run.jugador.f == final.f and child_run.jugador.c == final.c){
-				current_state = child_run;
-				SolutionFound = true;
-			}
-			else if(!Find(child_run, frontier) and !Find(child_run, explored)){
-				frontier.push_back(child_run);
-			}
-		}
-
-		if(!SolutionFound){
-			// Generar hijo actTURN_L
-			stateN0 child_turnl = apply(actTURN_L, current_state, mapa);
-			if(!Find(child_turnl, frontier) and !Find(child_turnl, explored)){
-				frontier.push_back(child_turnl);
-			}
-			// Generar hijo actTURN_SR
-			stateN0 child_turnsr = apply(actTURN_SR, current_state, mapa);
-			if(!Find(child_turnsr, frontier) and !Find(child_turnsr, explored)){
-				frontier.push_back(child_turnsr);
-			}
-		}
-
-		if(!SolutionFound and !frontier.empty()){
-			current_state = frontier.front();
-		}
-	}
-}
-
-/* Version segunda de la busqueda en anchura: ahora si devuelve un plan */
+/*Version segunda de la búsqueda en anchura: ahora si devuelve un plan*/
 list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa){
 	nodeN0 current_node;
 	list<nodeN0> frontier;
@@ -307,20 +305,20 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 		frontier.pop_front();
 		explored.push_back(current_node);
 
-		// Generar hijo actWALK
+		//Generar hijo actWALK
 		nodeN0 child_walk = current_node;
 		child_walk.st = apply(actWALK, current_node.st, mapa);
 		child_walk.secuencia.push_back(actWALK);
-		if(child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+		if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
 			current_node = child_walk;
 			SolutionFound = true;
 		}
-		else if(!Find(child_walk.st, frontier) and !Find(child_walk.st, explored)){
+		else if (!Find(child_walk.st, frontier) and !Find(child_walk.st, explored)){
 			frontier.push_back(child_walk);
 		}
 
 		if(!SolutionFound){
-			// Generar hijo actRUN
+			//Generar hijo actRUN
 			nodeN0 child_run = current_node;
 			child_run.st = apply(actRUN, current_node.st, mapa);
 			child_run.secuencia.push_back(actRUN);
@@ -328,39 +326,38 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 				current_node = child_run;
 				SolutionFound = true;
 			}
-			else if(!Find(child_run.st, frontier) and !Find(child_run.st, explored)){
+			else if (!Find(child_run.st, frontier) and !Find(child_run.st, explored)){
 				frontier.push_back(child_run);
 			}
 		}
 
 		if(!SolutionFound){
-			// Generar hijo actTURN_L
+			//Generar hijo actTURN_L
 			nodeN0 child_turnl = current_node;
 			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
 			child_turnl.secuencia.push_back(actTURN_L);
 			if(!Find(child_turnl.st, frontier) and !Find(child_turnl.st, explored)){
 				frontier.push_back(child_turnl);
 			}
-			// Generar hijo actTURN_SR
+			//Generar hijo actTURN_SR
 			nodeN0 child_turnsr = current_node;
 			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+			child_turnsr.secuencia.push_back(actTURN_SR);
 			if(!Find(child_turnsr.st, frontier) and !Find(child_turnsr.st, explored)){
 				frontier.push_back(child_turnsr);
 			}
 		}
-
-		if(!SolutionFound and !frontier.empty()){
+		if(!SolutionFound and !frontier.empty())
 			current_node = frontier.front();
-		}
 	}
-	if(SolutionFound){
+	if (SolutionFound){
 		plan = current_node.secuencia;
 		cout << "Encontrado un plan: ";
 		PintaPlan(current_node.secuencia);
 	}
-
 	return plan;
 }
+
 
 
 
