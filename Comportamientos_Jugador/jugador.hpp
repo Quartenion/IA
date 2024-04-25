@@ -21,6 +21,22 @@ struct stateN0{
   }
 };
 
+struct stateN1{
+  ubicacion jugador;
+  ubicacion colaborador;
+  Action ultimaOrdenColaborador;
+
+  bool operator==(const stateN1 &x) const{
+    if(jugador == x.jugador and 
+       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+};
+
 
 class ComportamientoJugador : public Comportamiento {
   public:
@@ -38,6 +54,7 @@ class ComportamientoJugador : public Comportamiento {
     int interact(Action accion, int valor);
 
     void VisualizaPlan(const stateN0 &st, const list<Action> &plan);
+    void VisualizaPlan1(const stateN1 &st, const list<Action> &plan);
 
 
   private:
@@ -45,7 +62,10 @@ class ComportamientoJugador : public Comportamiento {
     list<Action> plan;
     bool hayPlan;
     stateN0 c_state;
+    stateN1 c_state1;
     ubicacion goal;
+    ubicacion goalCLB;
+    ubicacion goalGetToCLB;
 };
 
 #endif
