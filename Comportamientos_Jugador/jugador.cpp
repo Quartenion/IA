@@ -650,8 +650,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 			goal.f = sensores.destinoF; 
 			goal.c = sensores.destinoC;
-			goalGetToCLB.f = sensores.CLBposF;
-			goalGetToCLB.c = sensores.CLBposC;
 			switch (sensores.nivel){
 				case 0: 
 					plan = AnchuraSoloJugador(c_state, goal, mapaResultado);

@@ -64,8 +64,7 @@ class ComportamientoJugador : public Comportamiento {
     stateN0 c_state;
     stateN1 c_state1;
     ubicacion goal;
-    ubicacion goalCLB;
-    ubicacion goalGetToCLB;
+    
 };
 
 #endif
