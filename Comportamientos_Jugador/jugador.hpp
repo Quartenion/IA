@@ -37,6 +37,30 @@ struct stateN1{
   }
 };
 
+struct stateN2{
+  ubicacion jugador;
+  ubicacion colaborador;
+  Action ultimaOrdenColaborador;
+  bool bikini;
+  bool zapatillas;
+  bool bateria;
+
+  bool operator==(const stateN2 &x) const{
+    if(jugador == x.jugador and 
+       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  bool operator<(const stateN2 &n) const{
+		return n.bateria > bateria;
+	}
+};
+
+
 
 class ComportamientoJugador : public Comportamiento {
   public:
@@ -46,6 +70,12 @@ class ComportamientoJugador : public Comportamiento {
     ComportamientoJugador(std::vector< std::vector< unsigned char> > mapaR) : Comportamiento(mapaR) {
       // Inicializar Variables de Estado
       hayPlan = false;
+
+      for(int i = 0; i < 100; i++){
+        for(int j = 0; j < 100; j++){
+          vista[i][j] = '-';
+        }
+      }
     }
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
     ~ComportamientoJugador(){}
@@ -55,6 +85,8 @@ class ComportamientoJugador : public Comportamiento {
 
     void VisualizaPlan(const stateN0 &st, const list<Action> &plan);
     void VisualizaPlan1(const stateN1 &st, const list<Action> &plan);
+    void VisualizaPlan2(const stateN2 &st, const list<Action> &plan);
+    void LoQueVeo(Sensores sensores);
 
 
   private:
@@ -63,8 +95,9 @@ class ComportamientoJugador : public Comportamiento {
     bool hayPlan;
     stateN0 c_state;
     stateN1 c_state1;
+    stateN2 c_state2;
     ubicacion goal;
-    
+    char vista[100][100];
 };
 
 #endif
