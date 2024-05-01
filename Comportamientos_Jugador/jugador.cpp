@@ -14,7 +14,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f - i == st.colaborador.f and st.jugador.c - i + j == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-i+j << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-i+j << endl;
 						percibido = true;
 					}
 				}
@@ -25,7 +25,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4  ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f - i == st.colaborador.f and st.jugador.c + j == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c+j << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c+j << endl;
 						percibido = true;
 					}
 				}
@@ -36,7 +36,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f + i == st.colaborador.f and st.jugador.c + i - j == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+i-j << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+i-j << endl;
 						percibido = true;
 					}
 				}
@@ -47,7 +47,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f + i == st.colaborador.f and st.jugador.c + j == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+j << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+j << endl;
 						percibido = true;
 					}
 				}
@@ -57,7 +57,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f - i + j == st.colaborador.f and st.jugador.c + i == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i+j << " , " << st.jugador.c+i << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i+j << " , " << st.jugador.c+i << endl;
 						percibido = true;
 					}
 				}
@@ -68,7 +68,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f - i == st.colaborador.f and st.jugador.c - j == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-j << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-j << endl;
 						percibido = true;
 					}
 				}
@@ -78,7 +78,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f + i - j == st.colaborador.f and st.jugador.c - i == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i-j << " , " << st.jugador.c-i << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i-j << " , " << st.jugador.c-i << endl;
 						percibido = true;
 					}
 				}
@@ -89,7 +89,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f + i == st.colaborador.f and st.jugador.c - j == st.colaborador.c){
-						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c-j << endl;
+						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c-j << endl;
 						percibido = true;
 					}
 				}
@@ -766,9 +766,8 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 
 		
 		//cout << "PLAN ACTUAL --> ";
-		PintaPlan(current_node.secuencia);
-		PintaEstado(current_node.st);
-		
+		//PintaPlan(current_node.secuencia);
+		//PintaEstado(current_node.st);
 
 		percibido = PerciboColaborador(current_node.st);
 
@@ -833,6 +832,9 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 			//Generar hijo actIDLE
 			nodeN1 child_idle = current_node;
 			child_idle.secuencia.push_back(actIDLE);
+			if(explored.find(child_idle) == explored.end()){
+				frontier.push_back(child_idle);
+			}
 			if(child_idle.st.colaborador.f == final.f and child_idle.st.colaborador.c == final.c){
 				current_node = child_idle;
 				SolutionFound = true;
