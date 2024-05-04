@@ -28,7 +28,8 @@ struct stateN1{
 
   bool operator==(const stateN1 &x) const{
     if(jugador == x.jugador and 
-       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c){
+       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c and
+       ultimaOrdenColaborador == x.ultimaOrdenColaborador){
       return true;
     }
     else{
@@ -43,7 +44,8 @@ struct stateN2{
   Action ultimaOrdenColaborador;
   bool bikini;
   bool zapatillas;
-  bool bateria;
+  int bateria;
+  int prioridad;
 
   bool operator==(const stateN2 &x) const{
     if(jugador == x.jugador and 
@@ -57,6 +59,80 @@ struct stateN2{
 
   bool operator<(const stateN2 &n) const{
 		return n.bateria > bateria;
+	}
+};
+
+struct nodeN0{
+	stateN0 st;
+	list<Action> secuencia;
+
+	bool operator==(const nodeN0 &n) const{
+		return (st==n.st);
+	}
+
+	bool operator<(const nodeN0 &b) const{
+		if(st.jugador.f < b.st.jugador.f)
+			return true;
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
+			return true;
+		else
+			return false;
+	}
+};
+// Definición del tipo de nodo del nivel 1
+struct nodeN1{
+	stateN1 st;
+	list<Action> secuencia;
+
+	bool operator==(const nodeN1 &n) const{
+		return (st==n.st);
+	}
+
+	bool operator<(const nodeN1 &b) const{
+		if(st.jugador.f < b.st.jugador.f)
+			return true;
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f < b.st.colaborador.f)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c < b.st.colaborador.c)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula == b.st.colaborador.brujula and st.ultimaOrdenColaborador < b.st.ultimaOrdenColaborador)
+			return true;
+		else
+			return false;
+	}
+};
+// Definición del tipo de nodo del nivel 2
+struct nodeN2{
+	stateN2 st;
+	list<Action> secuencia;
+
+	bool operator==(const nodeN2 &n) const{
+		return (st==n.st);
+	}
+
+	bool operator<(const nodeN2 &b) const{
+		if(st.jugador.f < b.st.jugador.f)
+			return true;
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula and st.bikini < b.st.bikini)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula and st.bikini == b.st.bikini and st.zapatillas < b.st.zapatillas)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula and st.bikini == b.st.bikini and st.zapatillas == b.st.zapatillas and st.bateria < b.st.bateria)
+			return true;
+		else
+			return false;
 	}
 };
 

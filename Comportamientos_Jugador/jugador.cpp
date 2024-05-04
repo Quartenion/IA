@@ -14,7 +14,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f - i == st.colaborador.f and st.jugador.c - i + j == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-i+j << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-i+j << endl;
 						percibido = true;
 					}
 				}
@@ -25,7 +25,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4  ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f - i == st.colaborador.f and st.jugador.c + j == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c+j << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c+j << endl;
 						percibido = true;
 					}
 				}
@@ -36,7 +36,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f + i == st.colaborador.f and st.jugador.c + i - j == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+i-j << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+i-j << endl;
 						percibido = true;
 					}
 				}
@@ -47,17 +47,18 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f + i == st.colaborador.f and st.jugador.c + j == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+j << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c+j << endl;
 						percibido = true;
 					}
 				}
 			}
+		break;
 
 		case este:
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f - i + j == st.colaborador.f and st.jugador.c + i == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i+j << " , " << st.jugador.c+i << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i+j << " , " << st.jugador.c+i << endl;
 						percibido = true;
 					}
 				}
@@ -68,17 +69,18 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f - i == st.colaborador.f and st.jugador.c - j == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-j << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f-i << " , " << st.jugador.c-j << endl;
 						percibido = true;
 					}
 				}
 			}
+		break;
 
 		case oeste:
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 2*i + 1 ; j++){
 					if(st.jugador.f + i - j == st.colaborador.f and st.jugador.c - i == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i-j << " , " << st.jugador.c-i << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i-j << " , " << st.jugador.c-i << endl;
 						percibido = true;
 					}
 				}
@@ -89,7 +91,7 @@ bool PerciboColaborador(stateN1 st){
 			for(int i = 0; i < 4 ;i++){
 				for(int j = 0; j < 4 ;j++){
 					if(st.jugador.f + i == st.colaborador.f and st.jugador.c - j == st.colaborador.c){
-						cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c-j << endl;
+						//cout << "COLABORADOR PERCIBIDO EN " << st.jugador.f+i << " , " << st.jugador.c-j << endl;
 						percibido = true;
 					}
 				}
@@ -381,6 +383,7 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 	}
 	return coste;
 }
+
 // Encuentra si el elemento item está en la lista
 bool Find (const stateN0 &item, const list <stateN0> &lista){
 	auto it = lista.begin();
@@ -566,67 +569,11 @@ void ComportamientoJugador::VisualizaPlan2(const stateN2 &st, const list<Action>
 		it++;
 	}
 }
-
 // Definción del tipo de nodo del nivel 0
-struct nodeN0{
-	stateN0 st;
-	list<Action> secuencia;
 
-	bool operator==(const nodeN0 &n) const{
-		return (st==n.st);
-	}
-
-	bool operator<(const nodeN0 &b) const{
-		if(st.jugador.f < b.st.jugador.f)
-			return true;
-		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
-			return true;
-		else
-			return false;
-	}
-};
-// Definición del tipo de nodo del nivel 1
-struct nodeN1{
-	stateN1 st;
-	list<Action> secuencia;
-
-	bool operator==(const nodeN1 &n) const{
-		return (st==n.st);
-	}
-
-	bool operator<(const nodeN1 &b) const{
-		if(st.jugador.f < b.st.jugador.f)
-			return true;
-		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f < b.st.colaborador.f)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c < b.st.colaborador.c)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula == b.st.colaborador.brujula and st.ultimaOrdenColaborador < b.st.ultimaOrdenColaborador)
-			return true;
-		else
-			return false;
-	}
-};
-// Definición del tipo de nodo del nivel 2
-struct nodeN2{
-	stateN2 st;
-	int bateria;
-	list<Action> secuencia;
-
-	bool operator==(const nodeN2 &n) const{
-		return (st==n.st);
-	}
-
-	bool operator<(const nodeN2 &n) const{
-		return n.bateria > bateria;
+struct OrdenarPrioridad{
+	bool operator()(nodeN2 &x, nodeN2 &y){
+		return x.st.bateria < y.st.bateria;
 	}
 };
 
@@ -754,11 +701,11 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 	list<Action> plan;
 	bool percibido = false;
 	current_node.st = inicio;
-	bool SolutionFound = (current_node.st.colaborador.f == final.f and 
-						  current_node.st.colaborador.c == final.c);
 	frontier.push_back(current_node);
 	bool valido;
-
+	bool SolutionFound = (current_node.st.colaborador.f == final.f and 
+						  current_node.st.colaborador.c == final.c);
+	
 	while(!frontier.empty() and !SolutionFound){
 		valido = true;
 		frontier.pop_front();
@@ -785,16 +732,18 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 				frontier.push_back(child_CLBwalk);
 			}
 
-			//Generar hijo act_CLB_TURN_SR
+			if(!SolutionFound){
+				//Generar hijo act_CLB_TURN_SR
 				nodeN1 child_CLBturnsr = current_node;
 				child_CLBturnsr.st = apply1(act_CLB_TURN_SR, current_node.st, mapa);
 				child_CLBturnsr.secuencia.push_back(act_CLB_TURN_SR);
 				child_CLBwalk.st.ultimaOrdenColaborador = act_CLB_TURN_SR;
-
 				if(explored.find(child_CLBturnsr) == explored.end()){
 					frontier.push_back(child_CLBturnsr);
 				}
-
+			}
+			
+			if(!SolutionFound){
 				//Generar hijo act_CLB_STOP
 				nodeN1 child_CLBstop = current_node;
 				child_CLBstop.st = apply1(act_CLB_STOP, current_node.st, mapa);
@@ -803,38 +752,40 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 				if(explored.find(child_CLBstop) == explored.end()){
 					frontier.push_back(child_CLBstop);
 				}
+			}
 		}
 		// Generar el estado intermedio
 		if (current_node.st.ultimaOrdenColaborador == act_CLB_WALK){
 			nodeN1 child_CLBwalk = current_node;
 			child_CLBwalk.st = apply1(act_CLB_WALK, current_node.st, mapa);
-			if (!(child_CLBwalk == current_node)){
+			if(child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c){
+				current_node = child_CLBwalk;
+				SolutionFound = true;
+			}
+			else if (!(child_CLBwalk == current_node)){
 				current_node = child_CLBwalk;
 			}
 			else {
 				valido = false;
 			}
 		}
-		else if (current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR){
-			nodeN1 child_CLBwalk = current_node;
-			child_CLBwalk.st = apply1(act_CLB_TURN_SR, current_node.st, mapa);
-			if (!(child_CLBwalk == current_node)){
-				current_node = child_CLBwalk;
+
+		if (current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR){
+			nodeN1 child_CLBturnsr = current_node;
+			child_CLBturnsr.st = apply1(act_CLB_TURN_SR, current_node.st, mapa);
+			if (!(child_CLBturnsr == current_node)){
+				current_node = child_CLBturnsr;
 			}
 			else {
 				valido = false;
 			}
-
 		}
 
 		if(!SolutionFound and valido){
-
 			//Generar hijo actIDLE
 			nodeN1 child_idle = current_node;
+			child_idle.st = apply1(actIDLE, current_node.st, mapa);
 			child_idle.secuencia.push_back(actIDLE);
-			if(explored.find(child_idle) == explored.end()){
-				frontier.push_back(child_idle);
-			}
 			if(child_idle.st.colaborador.f == final.f and child_idle.st.colaborador.c == final.c){
 				current_node = child_idle;
 				SolutionFound = true;
@@ -843,7 +794,6 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 				frontier.push_back(child_idle);
 			}
 		}
-
 
 		if(!SolutionFound and valido){
 			//Generar hijo actWALK
@@ -859,9 +809,7 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 			}
 		}
 
-
 		if(!SolutionFound and valido){
-
 			//Generar hijo actRUN
 			nodeN1 child_run = current_node;
 			child_run.st = apply1(actRUN, current_node.st, mapa);
@@ -883,6 +831,9 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 			if( explored.find(child_turnl) == explored.end()){
 				frontier.push_back(child_turnl);
 			}
+		}
+
+		if(!SolutionFound and valido){
 			//Generar hijo actTURN_SR
 			nodeN1 child_turnsr = current_node;
 			child_turnsr.st = apply1(actTURN_SR, current_node.st, mapa);
@@ -913,57 +864,78 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 
 list<Action> N2(const stateN2 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa, int bateria){
 	nodeN2 current_node;
-	priority_queue<nodeN2> frontier;
+	priority_queue<nodeN2, vector<nodeN2>,OrdenarPrioridad> frontier;
 	set<stateN2> explored;
 	list<Action> plan;
 	current_node.st = inicio;
-	current_node.bateria = bateria;
-	bool SolutionFound = (current_node.st.jugador.f == final.f and
+	current_node.st.bateria = 0;
+	bool SolutionFound = (current_node.st.jugador.f == final.f and 
 						  current_node.st.jugador.c == final.c);
 	frontier.push(current_node);
 
 	while(!frontier.empty() and !SolutionFound){
 		frontier.pop();
 		explored.insert(current_node.st);
+		PintaPlan(plan);
+
 		if(current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c){
 			SolutionFound = true;
+			break;
 		}
 
 		if(!SolutionFound){
 			//Generar hijo actWALK
-			ubicacion sig_ubicacion = NextCasilla(current_node.st.jugador);
-			if(((sig_ubicacion.f != current_node.st.colaborador.f) or (sig_ubicacion.c != current_node.st.colaborador.c)) and CasillaTransitable(sig_ubicacion, mapa)){
+			ubicacion aux = NextCasilla(current_node.st.jugador);
+			if(((aux.f != current_node.st.colaborador.f) or (aux.c != current_node.st.colaborador.c)) and CasillaTransitable(aux,mapa)){
 				nodeN2 child_walk = current_node;
-				child_walk.bateria -= CosteAccion(child_walk.st, actWALK, mapa);
 				child_walk.st = apply2(actWALK, current_node.st, mapa);
-				if(explored.find(child_walk.st) == explored.end()){
-					child_walk.secuencia.push_back(actWALK);
+				child_walk.st.bateria += CosteAccion(child_walk.st, actWALK, mapa);
+				child_walk.secuencia.push_back(actWALK);
+				if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+					current_node = child_walk;
+					SolutionFound = true;
+				}
+				else if (explored.find(child_walk.st) == explored.end()){
 					frontier.push(child_walk);
+				}
+
+				ubicacion auxsig = NextCasilla(aux);
+				if(((auxsig.f != current_node.st.colaborador.f) or (auxsig.c != current_node.st.colaborador.c)) and CasillaTransitable(auxsig,mapa)){
+					//Generar hijo actRUN
+					nodeN2 child_run = current_node;
+					child_run.st = apply2(actRUN, current_node.st, mapa);
+					child_run.st.bateria += CosteAccion(current_node.st, actRUN, mapa);
+					child_run.secuencia.push_back(actRUN);
+					if(child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+						current_node = child_run;
+						SolutionFound = true;
+					}
+					else if (explored.find(child_run.st) == explored.end()){
+						frontier.push(child_run);
+					}
 				}
 			}
 
 			//Generar hijo actTURN_L
 			nodeN2 child_turnl = current_node;
-			child_turnl.bateria -= CosteAccion(child_turnl.st, actTURN_L, mapa);
 			child_turnl.st = apply2(actTURN_L, current_node.st, mapa);
-			if (explored.find(child_turnl.st) == explored.end()){
-				child_turnl.secuencia.push_back(actTURN_L);
+			child_turnl.st.bateria += CosteAccion(current_node.st, actTURN_L, mapa);
+			child_turnl.secuencia.push_back(actTURN_L);
+			if( explored.find(child_turnl.st) == explored.end()){
 				frontier.push(child_turnl);
 			}
-
-			//Generar hijo actTURN_R
+			//Generar hijo actTURN_SR
 			nodeN2 child_turnsr = current_node;
-			child_turnsr.bateria -= CosteAccion(child_turnsr.st, actTURN_SR, mapa);
 			child_turnsr.st = apply2(actTURN_SR, current_node.st, mapa);
-			if (explored.find(child_turnsr.st) == explored.end()){
-				child_turnsr.secuencia.push_back(actTURN_SR);
+			child_turnsr.st.bateria += CosteAccion(current_node.st, actTURN_SR, mapa);
+			child_turnsr.secuencia.push_back(actTURN_SR);
+			if(explored.find(child_turnsr.st) == explored.end()){
 				frontier.push(child_turnsr);
 			}
 		}
-
 		if(!SolutionFound and !frontier.empty()){
 			current_node = frontier.top();
-			while(!frontier.empty() and explored.find(current_node.st) != explored.end()){
+			while (!frontier.empty() and explored.find(current_node.st) != explored.end()){
 				frontier.pop();
 				if(!frontier.empty()){
 					current_node = frontier.top();
@@ -971,12 +943,16 @@ list<Action> N2(const stateN2 &inicio, const ubicacion &final, const vector<vect
 			}
 		}
 	}
+
 	if(SolutionFound){
 		plan = current_node.secuencia;
+		cout << "Encontrado un plan: ";
+		PintaPlan(current_node.secuencia);
 	}
 
 	return plan;
 }
+
 void ComportamientoJugador::LoQueVeo(Sensores sensores){
 	int n_casillas = mapaResultado.size();
 	for(int i = 0; i < n_casillas; i++){
@@ -1105,6 +1081,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 			switch (sensores.nivel){
 				case 0: 
 					plan = N0(c_state, goal, mapaResultado);
+					VisualizaPlan(c_state, plan);
 					break;
 				case 1: // Incluir aqui la llamada a alg. busqueda del nivel 1
 					c_state1.ultimaOrdenColaborador = act_CLB_STOP;
@@ -1113,6 +1090,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 					break;
 				case 2: // Incluir aqui la llamada a alg. busqueda del nivel 2
 					plan = N2(c_state2, goal, mapaResultado, sensores.bateria);
+					VisualizaPlan2(c_state2,plan);
 					cout << "Pendiente de implementar el nivel 2\n";
 					break;
 				case 3: // Incluir aqui la llamada a alg. busqueda del nivel 3
