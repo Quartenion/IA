@@ -42,13 +42,13 @@ struct stateN2{
   ubicacion jugador;
   ubicacion colaborador;
   Action ultimaOrdenColaborador;
-  bool bikini = false;
-  bool zapatillas = false;
+  bool bikini;
+  bool zapatillas;
   int bateria;
 
   bool operator==(const stateN2 &x) const{
     if(jugador == x.jugador and 
-       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c){
+       zapatillas == x.zapatillas and bikini == x.bikini){
       return true;
     }
     else{
@@ -56,9 +56,11 @@ struct stateN2{
     }
   }
 
+  /*
   bool operator<(const stateN2 &n) const{
 		return n.bateria > bateria;
 	}
+  */
 };
 
 struct stateN3{
@@ -68,7 +70,8 @@ struct stateN3{
   bool bikini = false;
   bool zapatillas = false;
   int bateria;
-  int prioridad;
+  int heuristica;
+  int total;
 
   bool operator==(const stateN3 &x) const{
     if(jugador == x.jugador and 
@@ -148,11 +151,9 @@ struct nodeN2{
 			return true;
 		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
 			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula and st.bikini < b.st.bikini)
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.bikini < b.st.bikini)
 			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula and st.bikini == b.st.bikini and st.zapatillas < b.st.zapatillas)
-			return true;
-		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula and st.bikini == b.st.bikini and st.zapatillas == b.st.zapatillas and st.bateria < b.st.bateria)
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.bikini == b.st.bikini and st.zapatillas < b.st.zapatillas)
 			return true;
 		else
 			return false;
@@ -189,14 +190,10 @@ struct nodeN3{
 
 struct OrdenarPrioridad{
 	bool operator()(nodeN2 &x, nodeN2 &y){
-		return (x.st.bateria > y.st.bateria || 
-    (x.st.bateria == y.st.bateria && x.st.bikini > y.st.bikini) || 
-    (x.st.bateria == y.st.bateria && x.st.bikini == y.st.bikini && x.st.zapatillas > y.st.zapatillas));
+		return (x.st.bateria > y.st.bateria);
 	}
   bool operator()(nodeN3 &x, nodeN3 &y){
-		return (x.st.bateria > y.st.bateria || 
-    (x.st.bateria == y.st.bateria && x.st.bikini > y.st.bikini) || 
-    (x.st.bateria == y.st.bateria && x.st.bikini == y.st.bikini && x.st.zapatillas > y.st.zapatillas));
+		return (x.st.bateria > y.st.bateria);
 	}
 };
 

@@ -422,9 +422,9 @@ stateN3 apply3(const Action &a, const stateN3 &st, const vector<vector<unsigned 
 int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &mapa){
 	int coste = 0;
 
-	switch(mapa[st.jugador.f][st.jugador.c]){
-		case 'A':
-			if(accion == actWALK){
+	switch(accion){
+		case actWALK:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
 				if(st.bikini){
 					coste = 10;
 				}
@@ -432,34 +432,7 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 100;
 				}
 			}
-			else if(accion == actRUN){
-				if(st.bikini){
-					coste = 15;
-				}
-				else{
-					coste = 150;
-				}
-			}
-			else if(accion == actTURN_L){
-				if(st.bikini){
-					coste = 5;
-				}
-				else{
-					coste = 30;
-				}
-			}
-			else if(accion == actTURN_SR){
-				if(st.bikini){
-					coste = 2;
-				}
-				else{
-					coste = 10;
-				}
-			}
-		break;
-
-		case 'B':
-			if(accion == actWALK){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 15;
 				}
@@ -467,7 +440,23 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 50;
 				}
 			}
-			else if(accion == actRUN){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
+				coste = 2;
+			}
+			else
+				coste = 1;
+		break;
+
+		case actRUN:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
+				if(st.bikini){
+					coste = 15;
+				}
+				else{
+					coste = 150;
+				}
+			}
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 25;
 				}
@@ -475,7 +464,23 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 75;
 				}
 			}
-			else if(accion == actTURN_L){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
+				coste = 3;
+			}
+			else
+				coste = 1;
+		break;
+
+		case actTURN_L:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
+				if(st.bikini){
+					coste = 5;
+				}
+				else{
+					coste = 30;
+				}
+			}
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 1;
 				}
@@ -483,7 +488,23 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 7;
 				}
 			}
-			else if(accion == actTURN_SR){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
+				coste = 2;
+			}
+			else
+				coste = 1;
+		break;
+
+		case actTURN_SR:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
+				if(st.bikini){
+					coste = 2;
+				}
+				else{
+					coste = 10;
+				}
+			}
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 1;
 				}
@@ -491,25 +512,11 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 5;
 				}
 			}
-		break;
-
-		case 'T':
-			if(accion == actWALK){
-				coste = 2;
-			}
-			else if(accion == actRUN){
-				coste = 3;
-			}
-			else if(accion == actTURN_L){
-				coste = 2;
-			}
-			else if(accion == actTURN_SR){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
 				coste = 1;
 			}
-		break;
-
-		default:
-			coste = 1;
+			else
+				coste = 1;
 		break;
 	}
 	return coste;
@@ -518,9 +525,9 @@ int CosteAccion(stateN2 st, Action accion, const vector<vector<unsigned char>> &
 int CosteAccion(stateN3 st, Action accion, const vector<vector<unsigned char>> &mapa){
 	int coste = 0;
 
-	switch(mapa[st.jugador.f][st.jugador.c]){
-		case 'A':
-			if(accion == actWALK){
+	switch(accion){
+		case actWALK:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
 				if(st.bikini){
 					coste = 10;
 				}
@@ -528,34 +535,7 @@ int CosteAccion(stateN3 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 100;
 				}
 			}
-			else if(accion == actRUN){
-				if(st.bikini){
-					coste = 15;
-				}
-				else{
-					coste = 150;
-				}
-			}
-			else if(accion == actTURN_L){
-				if(st.bikini){
-					coste = 5;
-				}
-				else{
-					coste = 30;
-				}
-			}
-			else if(accion == actTURN_SR){
-				if(st.bikini){
-					coste = 2;
-				}
-				else{
-					coste = 10;
-				}
-			}
-		break;
-
-		case 'B':
-			if(accion == actWALK){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 15;
 				}
@@ -563,7 +543,23 @@ int CosteAccion(stateN3 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 50;
 				}
 			}
-			else if(accion == actRUN){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
+				coste = 2;
+			}
+			else
+				coste = 1;
+		break;
+
+		case actRUN:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
+				if(st.bikini){
+					coste = 15;
+				}
+				else{
+					coste = 150;
+				}
+			}
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 25;
 				}
@@ -571,7 +567,23 @@ int CosteAccion(stateN3 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 75;
 				}
 			}
-			else if(accion == actTURN_L){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
+				coste = 3;
+			}
+			else
+				coste = 1;
+		break;
+
+		case actTURN_L:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
+				if(st.bikini){
+					coste = 5;
+				}
+				else{
+					coste = 30;
+				}
+			}
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 1;
 				}
@@ -579,7 +591,23 @@ int CosteAccion(stateN3 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 7;
 				}
 			}
-			else if(accion == actTURN_SR){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
+				coste = 2;
+			}
+			else
+				coste = 1;
+		break;
+
+		case actTURN_SR:
+			if(mapa[st.jugador.f][st.jugador.c] == 'A'){
+				if(st.bikini){
+					coste = 2;
+				}
+				else{
+					coste = 10;
+				}
+			}
+			else if(mapa[st.jugador.f][st.jugador.c] == 'B'){
 				if(st.zapatillas){
 					coste = 1;
 				}
@@ -587,32 +615,68 @@ int CosteAccion(stateN3 st, Action accion, const vector<vector<unsigned char>> &
 					coste = 5;
 				}
 			}
-		break;
-
-		case 'T':
-			if(accion == actWALK){
-				coste = 2;
-			}
-			else if(accion == actRUN){
-				coste = 3;
-			}
-			else if(accion == actTURN_L){
-				coste = 2;
-			}
-			else if(accion == actTURN_SR){
+			else if(mapa[st.jugador.f][st.jugador.c] == 'T'){
 				coste = 1;
 			}
+			else
+				coste = 1;
 		break;
 
-		default:
-			coste = 1;
+		case act_CLB_WALK:
+			if(mapa[st.colaborador.f][st.colaborador.c] == 'A'){
+				if(st.bikini){
+					coste = 10;
+				}
+				else{
+					coste = 100;
+				}
+			}
+			else if(mapa[st.colaborador.f][st.colaborador.c] == 'B'){
+				if(st.zapatillas){
+					coste = 15;
+				}
+				else{
+					coste = 50;
+				}
+			}
+			else if(mapa[st.colaborador.f][st.colaborador.c] == 'T'){
+				coste = 2;
+			}
+			else
+				coste = 1;
+		break;
+
+		case act_CLB_TURN_SR:
+			if(mapa[st.colaborador.f][st.colaborador.c] == 'A'){
+				if(st.bikini){
+					coste = 2;
+				}
+				else{
+					coste = 10;
+				}
+			}
+			else if(mapa[st.colaborador.f][st.colaborador.c] == 'B'){
+				if(st.zapatillas){
+					coste = 1;
+				}
+				else{
+					coste = 5;
+				}
+			}
+			else if(mapa[st.colaborador.f][st.colaborador.c] == 'T'){
+				coste = 1;
+			}
+			else
+				coste = 1;
 		break;
 	}
 	return coste;
 }
 
 int Distancias(const stateN3 &origen, const ubicacion &destino){
-	return(sqrt((abs(origen.colaborador.c - destino.c) + abs(origen.colaborador.f - destino.f))) + (abs(origen.jugador.c - origen.colaborador.c - 3) + abs(origen.jugador.f - origen.colaborador.f - 3)));
+	int df = abs(origen.jugador.f - destino.f);
+	int dc = abs(origen.jugador.c - destino.c);
+	return max(df, dc);
 }
 // Encuentra si el elemento item está en la lista
 bool Find (const stateN0 &item, const list <stateN0> &lista){
@@ -687,6 +751,18 @@ void ComportamientoJugador::VisualizaPlan(const stateN0 &st, const list<Action> 
 }
 
 void PintaEstado (const stateN1 &x){
+	cout << "(" << x.jugador.f << ", " << x.jugador.c << ", " << x.jugador.brujula << ") ";
+	cout << "(" << x.colaborador.f << ", " << x.colaborador.c << ", " << x.colaborador.brujula << ") ";
+	cout << x.ultimaOrdenColaborador << endl;
+}
+
+void PintaEstado (const stateN2 &x){
+	cout << "(" << x.jugador.f << ", " << x.jugador.c << ", " << x.jugador.brujula << ") ";
+	cout << "(" << x.colaborador.f << ", " << x.colaborador.c << ", " << x.colaborador.brujula << ") ";
+	cout << x.ultimaOrdenColaborador << endl;
+}
+
+void PintaEstado (const stateN3 &x){
 	cout << "(" << x.jugador.f << ", " << x.jugador.c << ", " << x.jugador.brujula << ") ";
 	cout << "(" << x.colaborador.f << ", " << x.colaborador.c << ", " << x.colaborador.brujula << ") ";
 	cout << x.ultimaOrdenColaborador << endl;
@@ -971,7 +1047,8 @@ list<Action> N0(const stateN0 &inicio, const ubicacion &final, const vector<vect
 	return plan;
 }
 
-list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa){
+list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa)
+{
 	nodeN1 current_node;
 	list<nodeN1> frontier;
 	set<nodeN1> explored;
@@ -980,107 +1057,125 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 	current_node.st = inicio;
 	frontier.push_back(current_node);
 	bool valido;
-	bool SolutionFound = (current_node.st.colaborador.f == final.f and 
+	bool SolutionFound = (current_node.st.colaborador.f == final.f and
 						  current_node.st.colaborador.c == final.c);
-	
-	while(!frontier.empty() and !SolutionFound){
-		valido = true;
+
+	while (!frontier.empty() and !SolutionFound)
+	{
 		frontier.pop_front();
 		explored.insert(current_node);
 
-		//cout << "PLAN ACTUAL --> ";
-		//PintaPlan(current_node.secuencia);
-		//PintaEstado(current_node.st);
+		// cout << "PLAN ACTUAL --> ";
+		// PintaPlan(current_node.secuencia);
+		// PintaEstado(current_node.st);
 
 		percibido = PerciboColaborador(current_node.st);
 
-		if(percibido){
-			//Generar hijo act_CLB_WALK
-			nodeN1 child_CLBwalk = current_node;
-			child_CLBwalk.st = apply1(act_CLB_WALK, current_node.st, mapa);
-			child_CLBwalk.secuencia.push_back(act_CLB_WALK);
-			child_CLBwalk.st.ultimaOrdenColaborador = act_CLB_WALK;
-			if (child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c){
-				current_node = child_CLBwalk;
-				SolutionFound = true;
-			}
-			else if (explored.find(child_CLBwalk) == explored.end()){
-				frontier.push_back(child_CLBwalk);
+		if (percibido)
+		{
+
+			if (current_node.st.ultimaOrdenColaborador != act_CLB_WALK)
+			{
+				// Generar hijo act_CLB_WALK
+				nodeN1 child_CLBwalk = current_node;
+				child_CLBwalk.st = apply1(act_CLB_WALK, current_node.st, mapa);
+				child_CLBwalk.secuencia.push_back(act_CLB_WALK);
+				child_CLBwalk.st.ultimaOrdenColaborador = act_CLB_WALK;
+				if (child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c)
+				{
+					current_node = child_CLBwalk;
+					SolutionFound = true;
+				}
+				else if (explored.find(child_CLBwalk) == explored.end())
+				{
+					frontier.push_back(child_CLBwalk);
+				}
 			}
 
-			if(!SolutionFound){
-				//Generar hijo act_CLB_TURN_SR
+			if (!SolutionFound and current_node.st.ultimaOrdenColaborador != act_CLB_TURN_SR)
+			{
+				// Generar hijo act_CLB_TURN_SR
 				nodeN1 child_CLBturnsr = current_node;
 				child_CLBturnsr.st = apply1(act_CLB_TURN_SR, current_node.st, mapa);
 				child_CLBturnsr.secuencia.push_back(act_CLB_TURN_SR);
-				child_CLBwalk.st.ultimaOrdenColaborador = act_CLB_TURN_SR;
-				if(explored.find(child_CLBturnsr) == explored.end()){
+				child_CLBturnsr.st.ultimaOrdenColaborador = act_CLB_TURN_SR;
+				if (explored.find(child_CLBturnsr) == explored.end())
+				{
 					frontier.push_back(child_CLBturnsr);
 				}
 			}
-			
-			if(!SolutionFound){
-				//Generar hijo act_CLB_STOP
+
+			if (!SolutionFound and current_node.st.ultimaOrdenColaborador != act_CLB_STOP)
+			{
+				// Generar hijo act_CLB_STOP
 				nodeN1 child_CLBstop = current_node;
 				child_CLBstop.st = apply1(act_CLB_STOP, current_node.st, mapa);
 				child_CLBstop.secuencia.push_back(act_CLB_STOP);
-				child_CLBwalk.st.ultimaOrdenColaborador = act_CLB_STOP;
-				if(explored.find(child_CLBstop) == explored.end()){
+				child_CLBstop.st.ultimaOrdenColaborador = act_CLB_STOP;
+				if (explored.find(child_CLBstop) == explored.end())
+				{
 					frontier.push_back(child_CLBstop);
 				}
 			}
 		}
+
 		// Generar el estado intermedio
-		if (current_node.st.ultimaOrdenColaborador == act_CLB_WALK){
+		valido = true;
+		if (current_node.st.ultimaOrdenColaborador == act_CLB_WALK)
+		{
 			nodeN1 child_CLBwalk = current_node;
 			child_CLBwalk.st = apply1(act_CLB_WALK, current_node.st, mapa);
-			if(child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c){
+			if (child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c)
+			{
 				current_node = child_CLBwalk;
 				SolutionFound = true;
 			}
-			else if (!(child_CLBwalk == current_node)){
+			else if (!(child_CLBwalk == current_node))
+			{
 				current_node = child_CLBwalk;
 			}
-			else {
+			else
+			{
 				valido = false;
 			}
 		}
-
-		if (current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR){
+		else if (current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR)
+		{
 			nodeN1 child_CLBturnsr = current_node;
 			child_CLBturnsr.st = apply1(act_CLB_TURN_SR, current_node.st, mapa);
-			if (!(child_CLBturnsr == current_node)){
-				current_node = child_CLBturnsr;
-			}
-			else {
-				valido = false;
-			}
+			current_node = child_CLBturnsr;
 		}
 
-		if(!SolutionFound and valido){
-			//Generar hijo actIDLE
+		if (!SolutionFound and valido)
+		{
+			// Generar hijo actIDLE
 			nodeN1 child_idle = current_node;
 			child_idle.st = apply1(actIDLE, current_node.st, mapa);
 			child_idle.secuencia.push_back(actIDLE);
-			if(child_idle.st.colaborador.f == final.f and child_idle.st.colaborador.c == final.c){
+			if (child_idle.st.colaborador.f == final.f and child_idle.st.colaborador.c == final.c)
+			{
 				current_node = child_idle;
 				SolutionFound = true;
 			}
-			else if (explored.find(child_idle) == explored.end()){
+			else if (explored.find(child_idle) == explored.end())
+			{
 				frontier.push_back(child_idle);
 			}
 		}
 
-		if(!SolutionFound and valido){
-			//Generar hijo actWALK
+		if (!SolutionFound and valido)
+		{
+			// Generar hijo actWALK
 			nodeN1 child_walk = current_node;
 			child_walk.st = apply1(actWALK, current_node.st, mapa);
 			child_walk.secuencia.push_back(actWALK);
-			if (child_walk.st.colaborador.f == final.f and child_walk.st.colaborador.c == final.c){
+			if (child_walk.st.colaborador.f == final.f and child_walk.st.colaborador.c == final.c)
+			{
 				current_node = child_walk;
 				SolutionFound = true;
 			}
-			else if (explored.find(child_walk) == explored.end()){
+			else if (explored.find(child_walk) == explored.end())
+			{
 				frontier.push_back(child_walk);
 			}
 		}
@@ -1099,38 +1194,46 @@ list<Action> N1(const stateN1 &inicio, const ubicacion &final, const vector<vect
 			}
 		}
 
-		if(!SolutionFound and valido){
-			//Generar hijo actTURN_L
+		if (!SolutionFound and valido)
+		{
+			// Generar hijo actTURN_L
 			nodeN1 child_turnl = current_node;
 			child_turnl.st = apply1(actTURN_L, current_node.st, mapa);
 			child_turnl.secuencia.push_back(actTURN_L);
-			if( explored.find(child_turnl) == explored.end()){
+			if (explored.find(child_turnl) == explored.end())
+			{
 				frontier.push_back(child_turnl);
 			}
 		}
 
-		if(!SolutionFound and valido){
-			//Generar hijo actTURN_SR
+		if (!SolutionFound and valido)
+		{
+			// Generar hijo actTURN_SR
 			nodeN1 child_turnsr = current_node;
 			child_turnsr.st = apply1(actTURN_SR, current_node.st, mapa);
 			child_turnsr.secuencia.push_back(actTURN_SR);
-			if(explored.find(child_turnsr) == explored.end()){
+			if (explored.find(child_turnsr) == explored.end())
+			{
 				frontier.push_back(child_turnsr);
 			}
 		}
 
-		if(!SolutionFound and !frontier.empty()){
+		if (!SolutionFound and !frontier.empty())
+		{
 			current_node = frontier.front();
-			while (!frontier.empty() and explored.find(current_node) != explored.end()){
+			while (!frontier.empty() and explored.find(current_node) != explored.end())
+			{
 				frontier.pop_front();
-				if(!frontier.empty()){
+				if (!frontier.empty())
+				{
 					current_node = frontier.front();
 				}
 			}
 		}
 	}
 
-	if(SolutionFound){
+	if (SolutionFound)
+	{
 		plan = current_node.secuencia;
 		cout << "Encontrado un plan: ";
 		PintaPlan(current_node.secuencia);
@@ -1144,49 +1247,53 @@ list<Action> N2(const stateN2 &inicio, const ubicacion &final, const vector<vect
 	priority_queue<nodeN2, vector<nodeN2>, OrdenarPrioridad> frontier;
 	nodeN2 current_node;
 	current_node.st = inicio;
+	current_node.st.bateria = 0;
 
 	bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
 	current_node.secuencia.empty();
 	frontier.push(current_node);
 
 	while(!frontier.empty() and !SolutionFound){
-		
-		/*
-		if((mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'D') and (current_node.st.bikini == false)){
-			cout << "Bikini encontrado\n";
-			current_node.st.bikini = true;
-			current_node.st.zapatillas = false;
-		}
-		if((mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'B') and (current_node.st.zapatillas == false)){
-			cout << "Zapatillas encontradas\n";
-			current_node.st.zapatillas = true;
-			current_node.st.bikini = false;
-		}
-		*/
-		
+	
 		frontier.pop();
 		explored.insert(current_node);
 
-		//Generar hijo actWALK
-		nodeN2 child_walk = current_node;
-		child_walk.st = apply2(actWALK, current_node.st, mapa);
-		child_walk.secuencia.push_back(actWALK);
-		if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
-			current_node = child_walk;
-			SolutionFound = true;
+		if((mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'K') and (current_node.st.bikini == false)){
+			//cout << "Bikini encontrado\n";
+			current_node.st.bikini = true;
+			current_node.st.zapatillas = false;
 		}
-		else if(explored.find(child_walk) == explored.end()){
-			child_walk.st.bateria += CosteAccion(child_walk.st, actWALK, mapa);
-			frontier.push(child_walk);
+		if((mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'D') and (current_node.st.zapatillas == false)){
+			cout << "Zapatillas encontradas\n";
+			PintaEstado(current_node.st);
+			current_node.st.zapatillas = true;
+			current_node.st.bikini = false;
 		}
 
+		//cout << "BATERIA: " << current_node.st.bateria << endl;
+
+		//Generar hijo actWALK
+		if(!SolutionFound){
+			nodeN2 child_walk = current_node;
+			child_walk.st = apply2(actWALK, current_node.st, mapa);
+			child_walk.secuencia.push_back(actWALK);
+			if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+				current_node = child_walk;
+				SolutionFound = true;
+			}
+			else if(explored.find(child_walk) == explored.end()){
+				child_walk.st.bateria += CosteAccion(child_walk.st, actWALK, mapa);
+				frontier.push(child_walk);
+			}
+		}
+		
 		if(!SolutionFound){
 			//Generar hijo actRUN
 			nodeN2 child_run = current_node;
 			child_run.st = apply2(actRUN, current_node.st, mapa);
 			child_run.secuencia.push_back(actRUN);
-			if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
-				current_node = child_walk;
+			if (child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+				current_node = child_run;
 				SolutionFound = true;
 			}
 			else if(explored.find(child_run) == explored.end()){
@@ -1240,122 +1347,197 @@ list<Action> N3(const stateN3 &inicio, const ubicacion &final, const vector<vect
 	priority_queue<nodeN3, vector<nodeN3>, OrdenarPrioridad> frontier;
 	nodeN3 current_node;
 	bool percibido = false;
+	bool valido;
 	bool SolutionFound = (current_node.st.colaborador.f == final.f and 
 						  current_node.st.colaborador.c == final.c  );
 	
-	int costeG;
-	int costeH;
-
 	current_node.st = inicio;
 	current_node.st.bateria = 0;
-	current_node.st.prioridad = Distancias(current_node.st, final);
+	current_node.st.heuristica = 0;
+	current_node.st.total = 0;
 
 	frontier.push(current_node);
 
-	while(!frontier.empty()){
+	while(!frontier.empty() and !SolutionFound){
 		frontier.pop();
 		explored.insert(current_node);
-
+		valido = true;
+		PintaPlan(current_node.secuencia);
 		if((mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'K') and (current_node.st.bikini == false)){
-			cout << "Bikini encontrado\n";
+			//cout << "Bikini encontrado\n";
 			current_node.st.bikini = true;
 			current_node.st.zapatillas = false;
 		}
 		if((mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'D') and (current_node.st.zapatillas == false)){
-			cout << "Zapatillas encontradas\n";
+			//cout << "Zapatillas encontradas\n";
 			current_node.st.zapatillas = true;
 			current_node.st.bikini = false;
 		}
 		if((mapa[current_node.st.colaborador.f][current_node.st.colaborador.c] == 'K') and (current_node.st.bikini == false)){
-			cout << "Bikini encontrado\n";
 			current_node.st.bikini = true;
 			current_node.st.zapatillas = false;
 		}
 		if((mapa[current_node.st.colaborador.f][current_node.st.colaborador.c] == 'D') and (current_node.st.zapatillas == false)){
-			cout << "Zapatillas encontradas\n";
 			current_node.st.zapatillas = true;
 			current_node.st.bikini = false;
-		}
-
-		if(current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c){
-			SolutionFound = true;
-			break;
-		}
-
-		//Generar hijo actTURN_L
-		nodeN3 child_turnl = current_node;
-		child_turnl.st.bateria += CosteAccion(child_turnl.st, actTURN_L, mapa);
-		child_turnl.st.prioridad = child_turnl.st.bateria + Distancias(child_turnl.st, final);
-		child_turnl.st = apply3(actTURN_L, current_node.st, mapa);
-		if(explored.find(child_turnl) == explored.end()){
-			child_turnl.secuencia.push_back(actTURN_L);
-			frontier.push(child_turnl);
-		}
-
-		//Generar hijo actTURN_SR
-		nodeN3 child_turnsr = current_node;
-		child_turnsr.st.bateria += CosteAccion(child_turnsr.st, actTURN_SR, mapa);
-		child_turnsr.st.prioridad = child_turnsr.st.bateria + Distancias(child_turnsr.st, final);
-		child_turnsr.st = apply3(actTURN_SR, current_node.st, mapa);
-		if(explored.find(child_turnsr) == explored.end()){
-			child_turnsr.secuencia.push_back(actTURN_SR);
-			frontier.push(child_turnsr);
-		}
-
-		//Generar hijo actWALK
-		nodeN3 child_walk = current_node;
-		child_walk.st.bateria += CosteAccion(child_walk.st, actWALK, mapa);
-		child_walk.st.prioridad = child_walk.st.bateria + Distancias(child_walk.st, final);
-		child_walk.st = apply3(actWALK, current_node.st, mapa);
-		if(explored.find(child_walk) == explored.end()){
-			child_walk.secuencia.push_back(actWALK);
-			frontier.push(child_walk);
-		}
-
-		//Generar hijo actRUN
-		nodeN3 child_run = current_node;
-		child_run.st.bateria += CosteAccion(child_run.st, actRUN, mapa);
-		child_run.st.prioridad = child_run.st.bateria + Distancias(child_run.st, final);
-		child_run.st = apply3(actRUN, current_node.st, mapa);
-		if(explored.find(child_run) == explored.end()){
-			child_run.secuencia.push_back(actRUN);
-			frontier.push(child_run);
 		}
 
 		percibido = PerciboColaborador(current_node.st);
 
 		if(percibido){
-			//Generar hijo act_CLB_TURN_SR
-			nodeN3 child_CLBturnsr = current_node;
-			child_CLBturnsr.st.bateria += CosteAccion(child_CLBturnsr.st, act_CLB_TURN_SR, mapa);
-			child_CLBturnsr.st.prioridad = child_CLBturnsr.st.bateria + Distancias(child_CLBturnsr.st, final);
-			child_CLBturnsr.st = apply3(act_CLB_TURN_SR, current_node.st, mapa);
-			if(explored.find(child_CLBturnsr) == explored.end()){
-				child_CLBturnsr.secuencia.push_back(act_CLB_TURN_SR);
-				frontier.push(child_CLBturnsr);
+			//Generar hijo act_CLB_WALK
+			nodeN3 child_CLBwalk = current_node;
+			child_CLBwalk.st.bateria += CosteAccion(child_CLBwalk.st, act_CLB_WALK, mapa);
+			child_CLBwalk.st.heuristica = Distancias(child_CLBwalk.st, final);
+			child_CLBwalk.st.total = child_CLBwalk.st.bateria + child_CLBwalk.st.heuristica;
+			child_CLBwalk.st = apply3(act_CLB_WALK, current_node.st, mapa);
+			child_CLBwalk.secuencia.push_back(act_CLB_WALK);
+			if(child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c){
+				current_node = child_CLBwalk;
+				SolutionFound = true;
+			}
+			else if(explored.find(child_CLBwalk) == explored.end()){
+				frontier.push(child_CLBwalk);
 			}
 
-			//Generar hijo act_CLB_WALK
+			if(!SolutionFound){
+				//Generar hijo act_CLB_TURN_SR
+				nodeN3 child_CLBturnsr = current_node;
+				child_CLBturnsr.st.bateria += CosteAccion(child_CLBturnsr.st, act_CLB_TURN_SR, mapa);
+				child_CLBturnsr.st.heuristica = Distancias(child_CLBturnsr.st, final);
+				child_CLBturnsr.st.total = child_CLBturnsr.st.bateria + child_CLBturnsr.st.heuristica;
+				child_CLBturnsr.st = apply3(act_CLB_TURN_SR, current_node.st, mapa);
+				child_CLBturnsr.secuencia.push_back(act_CLB_TURN_SR);
+				if(explored.find(child_CLBturnsr) == explored.end()){
+					frontier.push(child_CLBturnsr);
+				}
+			}
+
+			if(!SolutionFound){
+				//Generar hijo act_CLB_STOP
+				nodeN3 child_CLBstop = current_node;
+				child_CLBstop.st.bateria += CosteAccion(child_CLBstop.st, act_CLB_STOP, mapa);
+				child_CLBstop.st.heuristica = Distancias(child_CLBstop.st, final);
+				child_CLBstop.st.total = child_CLBstop.st.bateria + child_CLBstop.st.heuristica;
+				child_CLBstop.st = apply3(act_CLB_STOP, current_node.st, mapa);
+				child_CLBstop.secuencia.push_back(act_CLB_STOP);
+				if(explored.find(child_CLBstop) == explored.end()){
+					frontier.push(child_CLBstop);
+				}
+			}
+		}
+
+		/*
+		// Generar el estado intermedio
+		if(current_node.st.ultimaOrdenColaborador == act_CLB_WALK){
 			nodeN3 child_CLBwalk = current_node;
 			child_CLBwalk.st.bateria += CosteAccion(child_CLBwalk.st, act_CLB_WALK, mapa);
 			child_CLBwalk.st.prioridad = child_CLBwalk.st.bateria + Distancias(child_CLBwalk.st, final);
 			child_CLBwalk.st = apply3(act_CLB_WALK, current_node.st, mapa);
-			if(explored.find(child_CLBwalk) == explored.end()){
-				child_CLBwalk.secuencia.push_back(act_CLB_WALK);
-				frontier.push(child_CLBwalk);
+			if(child_CLBwalk.st.colaborador.f == final.f and child_CLBwalk.st.colaborador.c == final.c){
+				current_node = child_CLBwalk;
+				SolutionFound = true;
 			}
-
-			//Generar hijo act_CLB_STOP
-			nodeN3 child_CLBstop = current_node;
-			child_CLBstop.st.bateria += CosteAccion(child_CLBstop.st, act_CLB_STOP, mapa);
-			child_CLBstop.st.prioridad = child_CLBstop.st.bateria + Distancias(child_CLBstop.st, final);
-			child_CLBstop.st = apply3(act_CLB_STOP, current_node.st, mapa);
-			if(explored.find(child_CLBstop) == explored.end()){
-				child_CLBstop.secuencia.push_back(act_CLB_STOP);
-				frontier.push(child_CLBstop);
+			else if(!(child_CLBwalk == current_node)){
+				current_node = child_CLBwalk;
+			}
+			else{
+				valido = false;
 			}
 		}
 
+		if(current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR){
+			nodeN3 child_CLBturnsr = current_node;
+			child_CLBturnsr.st.bateria += CosteAccion(child_CLBturnsr.st, act_CLB_TURN_SR, mapa);
+			child_CLBturnsr.st.prioridad = child_CLBturnsr.st.bateria + Distancias(child_CLBturnsr.st, final);
+			child_CLBturnsr.st = apply3(act_CLB_TURN_SR, current_node.st, mapa);
+			if(!(child_CLBturnsr == current_node)){
+				current_node = child_CLBturnsr;
+			}
+			else{
+				valido = false;
+			}
+		}	
+		*/
+		else{
+			if(!SolutionFound and valido){
+				//Generar hijo actIDLE
+				nodeN3 child_idle = current_node;
+				child_idle.st.bateria += CosteAccion(child_idle.st, actIDLE, mapa);
+				child_idle.st.heuristica = Distancias(child_idle.st, final);
+				child_idle.st.total = child_idle.st.bateria + child_idle.st.heuristica;
+				child_idle.st = apply3(actIDLE, current_node.st, mapa);
+				child_idle.secuencia.push_back(actIDLE);
+				if(child_idle.st.colaborador.f == final.f and child_idle.st.colaborador.c == final.c){
+					current_node = child_idle;
+					SolutionFound = true;
+				}
+				else if(explored.find(child_idle) == explored.end()){
+					frontier.push(child_idle);
+				}
+			}
+			
+			if(!SolutionFound and valido){
+				//Generar hijo actWALK
+				nodeN3 child_walk = current_node;
+				child_walk.st.bateria += CosteAccion(child_walk.st, actWALK, mapa);
+				child_walk.st.heuristica = Distancias(child_walk.st, final);
+				child_walk.st.total = child_walk.st.bateria + child_walk.st.heuristica;
+				child_walk.st = apply3(actWALK, current_node.st, mapa);
+				child_walk.secuencia.push_back(actWALK);
+				if(child_walk.st.colaborador.f == final.f and child_walk.st.colaborador.c == final.c){
+					current_node = child_walk;
+					SolutionFound = true;
+				}
+				else if(explored.find(child_walk) == explored.end()){
+					frontier.push(child_walk);
+				}
+			}
+
+			if(!SolutionFound and valido){
+				//Generar hijo actRUN
+				nodeN3 child_run = current_node;
+				child_run.st.bateria += CosteAccion(child_run.st, actRUN, mapa);
+				child_run.st.heuristica = Distancias(child_run.st, final);
+				child_run.st.total = child_run.st.bateria + child_run.st.heuristica;
+				child_run.st = apply3(actRUN, current_node.st, mapa);
+				child_run.secuencia.push_back(actRUN);
+				if(child_run.st.colaborador.f == final.f and child_run.st.colaborador.c == final.c){
+					current_node = child_run;
+					SolutionFound = true;
+				}
+				else if(explored.find(child_run) == explored.end()){
+					frontier.push(child_run);
+				}
+			}
+
+			if(!SolutionFound and valido){
+				//Generar hijo actTURN_L
+				nodeN3 child_turnl = current_node;
+				child_turnl.st.bateria += CosteAccion(child_turnl.st, actTURN_L, mapa);
+				child_turnl.st.heuristica = child_turnl.st.bateria + Distancias(child_turnl.st, final);
+				child_turnl.st.total = child_turnl.st.bateria + child_turnl.st.heuristica;
+				child_turnl.st = apply3(actTURN_L, current_node.st, mapa);
+				child_turnl.secuencia.push_back(actTURN_L);
+				if(explored.find(child_turnl) == explored.end()){
+					frontier.push(child_turnl);
+				}
+			}
+
+			if(!SolutionFound and valido){
+				//Generar hijo actTURN_SR
+				nodeN3 child_turnsr = current_node;
+				child_turnsr.st.bateria += CosteAccion(child_turnsr.st, actTURN_SR, mapa);
+				child_turnsr.st.heuristica = Distancias(child_turnsr.st, final);
+				child_turnsr.st.total = child_turnsr.st.bateria + child_turnsr.st.heuristica;
+				child_turnsr.st = apply3(actTURN_SR, current_node.st, mapa);
+				child_turnsr.secuencia.push_back(actTURN_SR);
+				if(explored.find(child_turnsr) == explored.end()){
+					frontier.push(child_turnsr);
+				}
+			}
+		}
+		
 		if(!SolutionFound and !frontier.empty()){
 			current_node = frontier.top();
 			while(!frontier.empty() and explored.find(current_node) != explored.end()){
@@ -1374,6 +1556,7 @@ list<Action> N3(const stateN3 &inicio, const ubicacion &final, const vector<vect
 	}
 	return plan;
 }
+
 
 void ComportamientoJugador::LoQueVeo(Sensores sensores){
 	int n_casillas = mapaResultado.size();
