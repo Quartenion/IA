@@ -83,8 +83,33 @@ struct stateN3{
     }
   }
 
-  bool operator<(const stateN2 &n) const{
-		return n.bateria > bateria;
+  bool operator<(const stateN3 &n) const{
+		return n.total > total;
+	}
+};
+
+struct stateN4{
+  ubicacion jugador;
+  ubicacion colaborador;
+  Action ultimaOrdenColaborador;
+  bool bikini = false;
+  bool zapatillas = false;
+  int bateria;
+  int heuristica;
+  int total;
+
+  bool operator==(const stateN4 &x) const{
+    if(jugador == x.jugador and 
+       colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  bool operator<(const stateN4 &n) const{
+		return n.total > total;
 	}
 };
 
@@ -159,7 +184,7 @@ struct nodeN2{
 			return false;
 	}
 };
-
+// Definicion del tipo de nodo del nivel 3
 struct nodeN3{
   stateN3 st;
   list<Action> secuencia;
@@ -187,13 +212,44 @@ struct nodeN3{
 			return false;
 	}
 };
+// Definicion del tipo de nodo del nivel 4
+struct nodeN4{
+  stateN4 st;
+  list<Action> secuencia;
 
+  bool operator==(const nodeN4 &n) const{
+    return (st==n.st);
+  }
+
+  bool operator<(const nodeN4 &b) const{
+    if(st.jugador.f < b.st.jugador.f)
+			return true;
+		else if(st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f < b.st.colaborador.f)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c < b.st.colaborador.c)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula)
+			return true;
+		else if (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula == b.st.colaborador.brujula and st.ultimaOrdenColaborador < b.st.ultimaOrdenColaborador)
+			return true;
+		else
+			return false;
+	}
+};
+// Ordena las acciones por cantidad de bateria que consumen
 struct OrdenarPrioridad{
 	bool operator()(nodeN2 &x, nodeN2 &y){
 		return (x.st.bateria > y.st.bateria);
 	}
   bool operator()(nodeN3 &x, nodeN3 &y){
-		return (x.st.bateria > y.st.bateria);
+		return (x.st.total > y.st.total);
+	}
+  bool operator()(nodeN4 &x, nodeN4 &y){
+		return (x.st.total > y.st.total);
 	}
 };
 
@@ -211,6 +267,8 @@ class ComportamientoJugador : public Comportamiento {
           vista[i][j] = '-';
         }
       }
+
+      bien_situado = false;
     }
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
     ~ComportamientoJugador(){}
@@ -222,6 +280,7 @@ class ComportamientoJugador : public Comportamiento {
     void VisualizaPlan1(const stateN1 &st, const list<Action> &plan);
     void VisualizaPlan2(const stateN2 &st, const list<Action> &plan);
     void VisualizaPlan3(const stateN3 &st, const list<Action> &plan);
+    void VisualizaPlan4(const stateN4 &st, const list<Action> &plan);
     void LoQueVeo(Sensores sensores);
 
 
@@ -233,8 +292,10 @@ class ComportamientoJugador : public Comportamiento {
     stateN1 c_state1;
     stateN2 c_state2;
     stateN3 c_state3;
+    stateN4 c_state4;
     ubicacion goal;
     char vista[100][100];
+    bool bien_situado;
 };
 
 #endif
