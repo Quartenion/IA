@@ -20,8 +20,24 @@ bool AIPlayer::move(){
     actual->movePiece(c_piece, id_piece, dice);
     return true;
 }
-
 void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
+    switch(id){
+        case 0:
+            thinkAleatorio(c_piece, id_piece, dice);
+            break;
+        case 1:
+            thinkAleatorioMasInteligente(c_piece, id_piece, dice);
+            break;
+        case 2:
+            //thinkFichaMasAdelantada(c_piece, id_piece, dice);
+            break;
+        case 3:
+            //thinkMejorOpcion(c_piece, id_piece, dice);
+            break;
+    }
+}
+
+void AIPlayer::thinkAleatorio(color & c_piece, int & id_piece, int & dice) const{
     // IMPLEMENTACIÓN INICIAL DEL AGENTE
     // Esta implementación realiza un movimiento aleatorio.
     // Se proporciona como ejemplo, pero se debe cambiar por una que realice un movimiento inteligente
@@ -91,7 +107,53 @@ void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
     */
 }
 
+void AIPlayer::thinkAleatorioMasInteligente(color & c_piece, int & id_piece, int & dice) const{
+    // El numero de mi jugador actual.
+    int player = actual->getCurrentPlayerId();
 
+    // Vector que almacenará los dados que se pueden usar para el movimiento
+    vector<int> current_dices;
+
+    // Vector que almacenará los ids de las fichas que se pueden mover para el dado elegido.
+    vector<tuple<color, int>> current_pieces;
+
+    // Obtengo el vector de dados que puedo usar para el movimiento.
+    // - actual->getAvailableNormalDices(player) -> solo dados disponibles en ese turno.
+    // Importante : "getAvailableNormalDices" me da los dados que puedo usar en el turno actual.
+    // Por ejemplo, si me tengo que contar 10 o 20 solo me saldrán los dados 10 y 20.
+    // Puedo saber qué más dados tengo, aunque no los pueda usar en este turno, con:
+    // - actual->getNormalDices(player) -> todos los dados
+    current_dices = actual->getAvailableNormalDices(player);
+
+    // En vez de elegir un dado al azar, miro primero cuales tienen fichas que se pueden mover
+    vector<int> current_dices_que_pueden_mover_ficha;
+    for(int i = 0; i < current_dices.size(); i++){
+        // Se obtiene el vector de fichas que se pueden mover para el dado elegido.
+        current_pieces = actual->getAvailablePieces(player, current_dices[i]);
+
+        // Si se pueden mover fichas para el dado actual, lo añado al vector de dados que pueden mover fichas.
+        if(current_pieces.size() > 0){
+            current_dices_que_pueden_mover_ficha.push_back(current_dices[i]);
+        }
+    }
+
+    // Si no tengo ningún dado que pueda mover fichas, paso turno con un dado al azar (la macro SKIP_TURN me permite no mover).
+    if (current_dices_que_pueden_mover_ficha.size() == 0){
+        dice = current_dices[rand() % current_dices.size()];
+        id_piece = SKIP_TURN;
+        c_piece = actual->getCurrentColor(); // Le tengo que indicar mi color actual al pasar turno.
+    }
+    // En caso contrario, elijo un dado de forma aleatoria de entre los que pueden mover ficha.
+    else{
+        dice = current_dices_que_pueden_mover_ficha[rand() % current_dices_que_pueden_mover_ficha.size()];
+        // Se obtiene el vector de fichas que se pueden mover para el dado elegido.
+        current_pieces = actual->getAvailablePieces(player, dice);
+        // Muevo una ficha al azar de entre las que se pueden mover.
+        int random_id = rand() % current_pieces.size();
+        id_piece = get<1>(current_pieces[random_id]);
+        c_piece = get<0>(current_pieces[random_id]);
+    }
+}
 
 double AIPlayer::ValoracionTest(const Parchis &estado, int jugador)
 {
