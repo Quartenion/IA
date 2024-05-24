@@ -1,6 +1,7 @@
 # include "AIPlayer.h"
 # include "Parchis.h"
 
+using namespace std;
 const double masinf = 9999999999.0, menosinf = -9999999999.0;
 const double gana = masinf - 1, pierde = menosinf + 1;
 const int num_pieces = 3;
@@ -20,6 +21,7 @@ bool AIPlayer::move(){
     actual->movePiece(c_piece, id_piece, dice);
     return true;
 }
+
 void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
     switch(id){
         case 0:
@@ -33,6 +35,12 @@ void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
             break;
         case 3:
             thinkMejorOpcion(c_piece, id_piece, dice);
+            break;
+        case 4:
+            //thinkMINMAX(c_piece, id_piece, dice);
+            break;
+        case 5:
+            thinkPODA_ALFA_BETA(c_piece, id_piece, dice);
             break;
     }
 }
@@ -240,6 +248,71 @@ void AIPlayer::thinkMejorOpcion(color & c_piece, int & id_piece, int & dice) con
     // (Ya lo he hecho antes, cuando les he asignado los valores con el iterador).
 }
 
+double AIPlayer::Poda_AlfaBeta(const Parchis & estado, int jugador, int profundidad, const int profundidad_max, color &c_piece, int &id_piece, int &dice, double alpha, double beta, double (*f)(const Parchis &,int)) const{
+    double valor;
+
+    if(profundidad == profundidad_max or estado.gameOver()){
+        return f(estado, jugador);
+    }
+    
+    if (jugador == estado.getCurrentPlayerId()){
+
+        ParchisBros hijos = estado.getChildren();
+        
+        for(ParchisBros::Iterator it = hijos.begin(); it != hijos.end() and alpha < beta; ++it){
+
+            double auxiliar = Poda_AlfaBeta(*it, jugador, profundidad+1, profundidad_max, c_piece, id_piece, dice, alpha, beta, f);
+            if(auxiliar > alpha){
+                alpha = auxiliar;
+
+                if(profundidad == 0){
+                    c_piece = it.getMovedColor();
+                    id_piece = it.getMovedPieceId();
+                    dice = it.getMovedDiceValue();
+                }
+
+                if(beta <= alpha){
+
+                    return beta;
+                    break;
+                }
+            }
+        }
+
+        return alpha;
+
+    } 
+    else {
+
+        ParchisBros hijos = estado.getChildren();
+
+        for(ParchisBros::Iterator it = hijos.begin(); it != hijos.end() and alpha < beta; ++it){
+
+            double auxiliar = Poda_AlfaBeta(*it, jugador, profundidad+1, profundidad_max, c_piece, id_piece, dice, alpha, beta, f);
+            if(auxiliar < beta){
+                beta = auxiliar;
+
+                if(beta <= alpha){
+                    return alpha;
+                }
+            }
+        }
+
+        return beta;
+    }
+
+}
+
+void AIPlayer::thinkPODA_ALFA_BETA(color & c_piece, int & id_piece, int & dice) const{
+
+    double valor; // Almacena el valor con el que se etiqueta el estado tras el proceso de busqueda.
+    double alpha = menosinf, beta = masinf; // Cotas iniciales de la poda AlfaBeta
+
+    // Si quiero poder manejar varias heurísticas, puedo usar la variable id del agente para usar una u otra.
+    valor = Poda_AlfaBeta(*actual, jugador, 0, PROFUNDIDAD_ALFABETA, c_piece, id_piece, dice, alpha, beta, ValoracionTest);
+    cout << "Valor MiniMax: " << valor << "  Accion: " << str(c_piece) << " " << id_piece << " " << dice << endl;
+}
+
 double AIPlayer::ValoracionTest(const Parchis &estado, int jugador)
 {
     // Heurística de prueba proporcionada para validar el funcionamiento del algoritmo de búsqueda.
@@ -309,4 +382,3 @@ double AIPlayer::ValoracionTest(const Parchis &estado, int jugador)
         return puntuacion_jugador - puntuacion_oponente;
     }
 }
-
