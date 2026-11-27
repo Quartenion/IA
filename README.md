@@ -37,7 +37,10 @@ cd P3
 ./build/ParchisGame   # para volver a lanzarlo después
 ```
 
-El README que hay dentro de cada carpeta es el enunciado original de la asignatura, por si hace falta más detalle sobre los parámetros.
+## Documentación
+
+- **[P1/README.md](P1/README.md), [P2/README.md](P2/README.md) y [P3/README.md](P3/README.md)** · Las instrucciones originales de la asignatura para cada práctica: cómo preparar el repositorio, cómo instalar y compilar en Linux, en una máquina virtual o en Gitpod, y cómo lanzar el simulador.
+- **[P2/FAQ.md](P2/FAQ.md)** · Preguntas frecuentes de la asignatura sobre la Práctica 2 y sobre el uso de GitHub.
 
 ## Estructura
 
